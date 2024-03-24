@@ -189,7 +189,7 @@ export const resetPassword = async (req, res) => {
 
     jwt.verify(token, process.env.PASSWORD_RESET_SECRET, async (err, decoded) => {
         if (err){
-            return res.json({msg: "Reset password token expired"})
+            return res.json({ok: false, msg: "Reset password token expired"})
         }
 
         const {email, password} = req.body
@@ -206,7 +206,7 @@ export const resetPassword = async (req, res) => {
             const result = await foundUser.save()
             console.log('New user password: ', result)
 
-            res.status(200).json({msg: "Password reset successful"})
+            res.status(200).json({ok: true, msg: "Password reset successful"})
         } catch (error) {
             res.json({msg: "An error occured while resetting password, please try again"})
             console.log("Password reset error: ", error)
