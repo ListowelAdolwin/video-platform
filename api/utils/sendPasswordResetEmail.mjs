@@ -11,7 +11,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
     })
 
     const html = `<h3>Hello there, please click on the link below to reset your password </br> \
-    <a href="http://127.0.0.1:3001/reset-password/${emailResetToken}">Reset password</a> \
+    <a href="http://127.0.0.1:5173/reset-password/${emailResetToken}">Reset password</a> \
     </br> </br>\
     You've got this! </h3>`
 

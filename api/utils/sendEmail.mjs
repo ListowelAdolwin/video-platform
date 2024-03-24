@@ -12,7 +12,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
 
     const html = `<h3>Hello there friend from Listo, please the next step after the registering is to confirm your email so we are sure you did not by mistake enter the wrong email </br> \
     Please click the link below to verify </br> \
-    <a href="http://127.0.0.1:3000/verify-email/${emailVerifyToken}">verify email</a> \
+    <a href="http://127.0.0.1:5173/verify-email/${emailVerifyToken}">verify email</a> \
     </br> </br>\
     You've got this! </h3>`
 
