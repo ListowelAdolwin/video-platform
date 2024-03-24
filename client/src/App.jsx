@@ -8,6 +8,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import Video from "./pages/Video";
+import UploadVideo from "./pages/UploadVideo";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/video/:id" element={<Video />} />
+          <Route path="/upload" element={<UploadVideo />} />
         </Routes>
       </BrowserRouter>
     </div>
