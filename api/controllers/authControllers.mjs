@@ -241,7 +241,6 @@ export const verifyToken = async (req, res, next) => {
 }
 
 
-
 export const refreshToken = async (req, res) => {
     // retrieve refresh token
     const token = req.body.refreshToken
@@ -277,7 +276,6 @@ export const refreshToken = async (req, res) => {
     })
     
 }
-
 
 
 export const logoutUser = async (req, res) => {
