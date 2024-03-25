@@ -13,7 +13,18 @@ const videoSchema = new mongoose.Schema({
     videoUrl: {
         type: String,
         required: true
+    },
+    nextVid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Video',
+        default: null
+    },
+    prevVid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Video',
+        default: null
     }
+    
 }, {timestamps: true})
 
 const Video = mongoose.model('Video', videoSchema)
