@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.post("/register", registerUser)
 router.post("/login", loginUser)
-router.post('/logout', logoutUser)
+router.get('/logout', logoutUser)
 router.get('/verify-email/:token', verifyEmail)
 // router.post('/validate-token', reactValidateToken)
 router.get('/resend-email/:token', resendEmail)
