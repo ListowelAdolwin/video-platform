@@ -20,47 +20,37 @@ function UploadVideo() {
   const [uploadError, setUploadError] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
 
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
+
   const handleVideoUpload = (video) => {
-    return new Promise((resolve, reject) => {
-      if (!video) reject("No video provided");
+    if (!video) reject("No video provided");
 
-      const storage = getStorage(app);
-      const fileName = new Date().getTime() + "__" + video.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, video);
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + "__" + video.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, video);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadPercent(Math.round(progress));
-        },
-        (error) => {
-          setUploadError(true);
-          console.log("Error in firebase: ", error);
-          reject(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              setVideoUrl(downloadURL);
-              resolve();
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }
-      );
-    });
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadPercent(Math.round(progress));
+      },
+      (error) => {
+        setUploadError(true);
+        console.log(error)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadRUL) => {
+          setVideoUrl(downloadRUL)
+        });
+      }
+    );
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await handleVideoUpload(video);
     const res = await fetch("/api/videos/save", {
       method: "POST",
       headers: {
@@ -76,9 +66,9 @@ function UploadVideo() {
     const data = await res.json();
     if (data.ok) {
       console.log(data);
-      toast("Video Successfully Uploaded!")
+      toast("Video Successfully Uploaded!");
       setInterval(() => {
-        navigate("/")
+        navigate("/");
       }, 3000);
     } else {
       console.log(data);
@@ -124,17 +114,19 @@ function UploadVideo() {
         <div>
           <div className="flex flex-col gap-4">
             <label className="font-semibold"> Select Video to upload</label>
-            <input
-              className=""
-              type="file"
-              name=""
-              id=""
-              accept="video/.*"
-              required
-              onChange={(e) => {
-                setVideo(e.target.files[0]);
-              }}
-            />
+            <div className="flex items-center">
+              <input
+                className=""
+                type="file"
+                name=""
+                id=""
+                accept="video/.*"
+                required
+                onChange={(e) => {
+                  setVideo(e.target.files[0]);
+                }}
+              />
+            </div>
             <div className="relative">
               {video && (
                 <div>
@@ -147,6 +139,13 @@ function UploadVideo() {
                     className="absolute top-0 right-0 p-2 text-red-700 rounded-full bg-gray-300"
                   >
                     <RiChatDeleteFill />
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+                    onClick={() => {handleVideoUpload(video)}}
+                  >
+                    Upload
                   </button>
                 </div>
               )}{" "}
@@ -164,7 +163,7 @@ function UploadVideo() {
             type="submit"
             className="w-full mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
           >
-            Upload video
+            Save video
           </button>
         </div>
       </form>
