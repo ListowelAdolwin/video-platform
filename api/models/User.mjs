@@ -34,7 +34,12 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
 
-  refreshToken: String
+  refreshToken: String,
+  
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const User = mongoose.model("User", userSchema)
