@@ -148,6 +148,7 @@ export const loginUser = async (req, res) => {
         accessToken: accessToken,
         refreshToken: refreshToken,
         msg: `User ${email} successfully logged in!`,
+        user: foundUser,
         ok: true
     })
     }catch(error){
