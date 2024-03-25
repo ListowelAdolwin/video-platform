@@ -9,10 +9,12 @@ import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import Video from "./pages/Video";
 import UploadVideo from "./pages/UploadVideo";
+import PrivateRoute from "./components/PrivateRoute";
+import EditVideo from "./pages/EditVideo";
 
 function App() {
   return (
-    <div className="bg-gray-700 h-screen">
+    <div>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -23,7 +25,10 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/video/:id" element={<Video />} />
-          <Route path="/upload" element={<UploadVideo />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/upload" element={<UploadVideo />} />
+            <Route path="/edit/:id" element={<EditVideo />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
