@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {useDispatch} from "react-redux"
+import { loginUser } from "../redux/features/user/userSlice";
 
 function Login() {
   const [userData, setUserData] = useState({});
   const[isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,6 +36,7 @@ function Login() {
     console.log(data);
     if (data.ok) {
       setIsLoading(false)
+      dispatch(loginUser(data.user))
       navigate("/");
     } else {
       setErrorMessage(data.msg)
