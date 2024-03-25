@@ -42,7 +42,7 @@ function Video({ video }) {
           </Link>
           {currentUser?.isAdmin && (
             <Link
-              to={`/video/${video._id}`}
+              to={`/edit/${video._id}`}
               className="bg-gray-700 p-2 rounded-full text-white hover:text-blue-500"
             >
               <FaEdit />
