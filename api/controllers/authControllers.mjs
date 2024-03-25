@@ -279,16 +279,11 @@ export const refreshToken = async (req, res) => {
 
 
 export const logoutUser = async (req, res) => {
-    const _id = req.params._id
-
-    const user = await User.findOne({_id})
-
-    if(!user) {
-        res.json({msg: "No user logged in"})
+    console.log("Logout hitttt")
+     try {
+        res.clearCookie("accessToken").json({ msg: "User successfully logged out!", ok: true });
+    } catch (error) {
+        console.error("Error clearing cookie:", error);
+        res.status(500).json({ error: "Failed to log out user", ok: false });
     }
-
-    user.refreshToken = ""
-    await user.save()
-
-    res.json({msg: `User ${user.email} successfully logged out`})
 }

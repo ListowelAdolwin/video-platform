@@ -72,14 +72,12 @@ export const deleteVideo = async (req, res) => {
 
     try {
         const video = await Video.findById(id)
-        console.log("video: ", video)
         if (!video) {
             return res.status(404).json({msg: "Video not found", ok: false})
         }
         const prevVid = await Video.findById(video.prevVid)
         const nextVid = await Video.findById(video.nextVid)
-        console.log("prev: ", prevVid)
-        console.log("next: ", nextVid)
+
         if (prevVid){
             prevVid.nextVid = nextVid?.id || null
             await prevVid.save()
@@ -96,5 +94,25 @@ export const deleteVideo = async (req, res) => {
     } catch (error) {
         console.log("Error in video deletion: ", error)
         return res.json({msg: "Could not delete video", ok: false})
+    }
+}
+
+
+export const editVideo = async (req, res) => {
+    const id = req.params.id
+    const video = await Video.findById(id)
+    if (!video) {
+        return res.status(404).json({msg: "Video not found", ok: false})
+    }
+
+    try {
+        const updatedVideo = await Video.findByIdAndUpdate(id, {
+            $set: req.body
+        }, {new: true})
+
+        res.status(200).json({msg: "Video edited successfully!", ok: true, video: updatedVideo})
+    } catch (error) {
+        console.log("Edit video error: ", error)
+        return res.json({msg: "Could not edit video"})
     }
 }

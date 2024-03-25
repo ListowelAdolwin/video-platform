@@ -45,12 +45,12 @@ function Video() {
 
 
   return (
-    <div className="max-w-5xl h-screen flex text-center p-5 mx-auto">
+    <div className="max-w-2xl h-screen flex text-center p-5 mx-auto">
       <div className="w-[700] h-[400px] text-white flex flex-col gap-4 mx-auto">
         {video && (
           <video
             key={video._id}
-            className="w-full h-full object-cover rounded-md"
+            className="max-w-2xl max-h-3xl object-cover rounded-md"
             src={url}
             controls
             autoPlay
@@ -82,7 +82,7 @@ function Video() {
           )}
         </div>
         <div className="relative flex justify-between items-center mb-2">
-          <div className="font-semibold text-lg">{video && video.title}</div>
+          <div className="font-semibold text-lg text-left">{video && video.title}</div>
           <div
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);

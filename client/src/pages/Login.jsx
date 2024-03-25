@@ -57,7 +57,6 @@ function Login() {
         <form action="#">
           <div className="mb-4">
             <label
-              for="email"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
               Email
@@ -73,7 +72,6 @@ function Login() {
           </div>
           <div className="mb-4">
             <label
-              for="password"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
               Password
