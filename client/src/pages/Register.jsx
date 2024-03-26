@@ -8,7 +8,7 @@ function Register() {
   const [errorMessages, setErrorMessages] = useState("");
 
   const navigate = useNavigate();
-  console.log(userData);
+
   const handleChange = (e) => {
     setUserData({
       ...userData,
@@ -31,7 +31,7 @@ function Register() {
     console.log("Response:", data);
     if (res.ok) {
       setIsLoading(false);
-      navigate("/login");
+      navigate(`/check-email/${data.user.id}`);
     } else {
       setErrorMessages(data.msg);
       setIsLoading(false);
