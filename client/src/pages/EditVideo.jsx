@@ -10,6 +10,7 @@ import { app } from "../firebase.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
+import { Oval } from "react-loader-spinner";
 
 function EditVideo() {
   const [title, setTitle] = useState("");
@@ -18,6 +19,8 @@ function EditVideo() {
   const [videoUrl, setVideoUrl] = useState("");
   const [uploadPercent, setUploadPercent] = useState(0);
   const [uploadError, setUploadError] = useState(false);
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
+  const [isUploadLoading, setIsUploadLoading] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -30,7 +33,7 @@ function EditVideo() {
       if (data.ok) {
         setTitle(data.video.title);
         setDesciption(data.video.description);
-        setVideoUrl(data.video.videoUrl)
+        setVideoUrl(data.video.videoUrl);
       }
     };
 
@@ -38,6 +41,7 @@ function EditVideo() {
   }, []);
 
   const handleVideoUpload = (video) => {
+    setIsUploadLoading(true);
     if (!video) return;
 
     const storage = getStorage(app);
@@ -59,6 +63,7 @@ function EditVideo() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadRUL) => {
           setVideoUrl(downloadRUL);
+          setIsUploadLoading(false);
         });
       }
     );
@@ -66,6 +71,7 @@ function EditVideo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaveLoading(true);
     const res = await fetch(`/api/videos/edit/${id}`, {
       method: "POST",
       headers: {
@@ -74,13 +80,14 @@ function EditVideo() {
       body: JSON.stringify({
         title,
         description,
-        videoUrl
+        videoUrl,
       }),
     });
 
     const data = await res.json();
     if (data.ok) {
       console.log(data);
+      setIsSaveLoading(false);
       toast("Video Successfully Editted!");
       setInterval(() => {
         navigate("/");
@@ -156,15 +163,34 @@ function EditVideo() {
                   >
                     <RiChatDeleteFill />
                   </button>
-                  <button
-                    type="button"
-                    className="mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
-                    onClick={() => {
-                      handleVideoUpload(video);
-                    }}
-                  >
-                    Upload
-                  </button>
+                  {isUploadLoading ? (
+                    <div
+                      style={{
+                        margin: "auto",
+                      }}
+                    >
+                      <Oval
+                        height="30"
+                        width="30"
+                        color="#383B53"
+                        ariaLabel="tail-spin-loading"
+                        radius="2"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+                      onClick={() => {
+                        handleVideoUpload(video);
+                      }}
+                    >
+                      Upload
+                    </button>
+                  )}
                 </div>
               )}{" "}
             </div>
@@ -177,12 +203,31 @@ function EditVideo() {
               <p className="text-green-500">Upload successful!</p>
             )}
           </div>
-          <button
-            type="submit"
-            className="w-full mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
-          >
-            Save video
-          </button>
+          {isSaveLoading ? (
+            <div
+              style={{
+                margin: "auto",
+              }}
+            >
+              <Oval
+                height="30"
+                width="30"
+                color="#383B53"
+                ariaLabel="tail-spin-loading"
+                radius="2"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+              />
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="w-full mt-3 rounded-xl bg-slate-800 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+            >
+              Save video
+            </button>
+          )}
         </div>
       </form>
     </div>
