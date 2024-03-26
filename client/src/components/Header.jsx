@@ -21,8 +21,9 @@ function HeaderNew() {
   };
 
   const { currentUser } = useSelector((state) => state.user);
+
   return (
-    <header className="mx-auto w-full max-w-screen-md bg-slate-600 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl lg:max-w-screen-lg">
+    <header className="mx-auto  mt-2 w-full max-w-screen-md bg-slate-600 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl lg:max-w-screen-lg">
       <div className="px-4">
         <div className="flex items-center justify-between">
           <div className="">
