@@ -48,8 +48,9 @@ function ForgotPassword() {
         >
           <p class="font-bold">Kindly note</p>
           <p class="text-sm">
-            Please check your email <span className="font-semibold">{userData.email}</span> and follow the
-            next steps to reset your password.
+            Please check your email{" "}
+            <span className="font-semibold">{userData.email}</span> and follow
+            the next steps to reset your password.
           </p>
           <button
             onClick={(e) => {
@@ -62,7 +63,7 @@ function ForgotPassword() {
           </button>
         </div>
       )}
-      <div className="bg-gray-600 shadow-md rounded-lg px-8 py-6 max-w-md">
+      <div className="bg-slate-600 shadow-md rounded-lg px-8 py-6 max-w-md">
         <h1 className="text-2xl text-white font-bold text-center mb-4 dark:text-gray-200">
           Reset Your Password
         </h1>

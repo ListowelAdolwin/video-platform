@@ -9,7 +9,7 @@ function ResetPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
-  const [password1, setPassword1] = useState("");
+  const [password1, setPassword1] = useState(" ");
   const [password2, setPassword2] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(false);
 
@@ -23,10 +23,12 @@ function ResetPassword() {
   useEffect(() => {
     setPasswordsMatch(password1 == password2);
   }, [password1, password2]);
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsLoading(true);
     setErrorMessages("");
-    e.preventDefault();
+
     const res = await fetch(`/api/auth/reset-password/${token}`, {
       method: "POST",
       headers: {
@@ -34,7 +36,7 @@ function ResetPassword() {
       },
       body: JSON.stringify({
         email,
-        password: password1
+        password: password1,
       }),
     });
     const data = await res.json();
@@ -51,7 +53,7 @@ function ResetPassword() {
   return (
     <div>
       <div className="min-h-screen flex items-center justify-center w-full bg-gray-700">
-        <div className="bg-gray-600 shadow-md rounded-lg px-8 py-6 max-w-sm">
+        <div className="bg-slate-600 shadow-md rounded-lg px-8 py-6 max-w-sm">
           <h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">
             Reset Password
           </h1>
@@ -76,7 +78,7 @@ function ResetPassword() {
                 required
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setIsLoading(false)
+                  setIsLoading(false);
                 }}
               />
             </div>
@@ -119,11 +121,7 @@ function ResetPassword() {
               />
             </div>
             <div className="mb-3 font-bold">
-              {passwordsMatch ? (
-                <GiCheckMark />
-              ) : (
-                <VscError />
-              )}
+              {passwordsMatch ? <GiCheckMark /> : <VscError />}
             </div>
 
             {isLoading ? (
