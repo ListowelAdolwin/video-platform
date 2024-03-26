@@ -1,7 +1,7 @@
 import Video from "../models/Video.mjs";
 
 export const saveVideo = async (req, res, next) => {
-    const {title, description, videoUrl} = req.body
+    const {title, description, videoUrl, poster} = req.body
     console.log(req.body)
 
     if (!title || !description || !videoUrl) {
@@ -10,11 +10,11 @@ export const saveVideo = async (req, res, next) => {
 
     try {
         const lastVideo = await Video.findOne().sort({ createdAt: -1 })
-        console.log("Last vid: ", lastVideo)
         const newVideo = await Video.create({
             title,
             description,
             videoUrl,
+            poster,
             prevVid: lastVideo ? lastVideo._id : null
         })
         if (lastVideo) {
@@ -44,7 +44,8 @@ export const getVideos = async (req, res) => {
 export const getVideo = async (req, res) => {
     const id = req.params.id
     try {
-        const video = await Video.findById(id)
+        const projection = { username: 1}
+        const video = await Video.findById(id).populate('poster', projection)
         res.json({ok: true, msg: "Videos fetched successfully", video})
     } catch (error) {
         res.status(500).json({ok: false, msg: "Error getting video"})
