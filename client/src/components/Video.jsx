@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaExternalLinkAlt, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Oval } from "react-loader-spinner";
 
-function Video({ video }) {
+function Video({ video, removeVideo }) {
   const { currentUser } = useSelector((state) => state.user);
+  const [isdeleteLoading, setIsDeleteLoading] = useState(false);
 
   const deleteVideo = async (id) => {
+    setIsDeleteLoading(true);
     const res = await fetch(`/api/videos/delete/${id}`);
-    const data = res.json();
+    const data = await res.json();
     if (data.ok) {
       console.log("Delete successful: ");
+      setIsDeleteLoading(false);
+      removeVideo(id);
     }
   };
 
@@ -49,15 +54,36 @@ function Video({ video }) {
             </Link>
           )}
           {currentUser?.isAdmin && (
-            <button
-              type="button"
-              className="bg-gray-700 p-2 rounded-full text-red-500 hover:text-white hover:bg-red-500"
-              onClick={() => {
-                deleteVideo(video._id);
-              }}
-            >
-              <MdDelete />
-            </button>
+            <div>
+              {isdeleteLoading ? (
+                <div
+                  style={{
+                    margin: "auto",
+                  }}
+                >
+                  <Oval
+                    height="30"
+                    width="30"
+                    color="#ef4444"
+                    ariaLabel="tail-spin-loading"
+                    radius="2"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="bg-gray-700 p-2 rounded-full text-red-500 hover:text-white hover:bg-red-500"
+                  onClick={() => {
+                    deleteVideo(video._id);
+                  }}
+                >
+                  <MdDelete />
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
