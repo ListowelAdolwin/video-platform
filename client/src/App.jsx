@@ -11,6 +11,7 @@ import Video from "./pages/Video";
 import UploadVideo from "./pages/UploadVideo";
 import PrivateRoute from "./components/PrivateRoute";
 import EditVideo from "./pages/EditVideo";
+import CheckEmailPage from "./pages/CheckEmailPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/check-email/:id" element={<CheckEmailPage />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
