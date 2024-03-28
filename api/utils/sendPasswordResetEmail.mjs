@@ -18,7 +18,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
             <p style="margin-bottom: 10px;">
             Click the link below to create a new, secure password:
             </p>
-            <a href="http://127.0.0.1:5173/reset-password/${emailResetToken}" style="color: #337ab7; text-decoration: none; border-bottom: 1px solid #337ab7;">
+            <a href="https://video-platform-api.onrender.com/reset-password/${emailResetToken}" style="color: #337ab7; text-decoration: none; border-bottom: 1px solid #337ab7;">
             Reset Password
             </a>
             <p style="margin-top: 15px;">
