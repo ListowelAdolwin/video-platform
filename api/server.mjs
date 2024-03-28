@@ -17,7 +17,8 @@ app.use(
       'https://video-platform-client.onrender.com',
       'http://127.0.0.1:5173/',
       'http://video-platform-client.onrender.com',
-      'https://127.0.0.1:5173/'
+      'https://127.0.0.1:5173/',
+      'http://127.0.0.1:5173'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
