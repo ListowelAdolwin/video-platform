@@ -29,7 +29,7 @@ function ResetPassword() {
     setIsLoading(true);
     setErrorMessages("");
 
-    const res = await fetch(`/api/auth/reset-password/${token}`, {
+    const res = await fetch(`https://video-platform-api.onrender.com/api/auth/reset-password/${token}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

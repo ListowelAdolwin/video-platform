@@ -11,7 +11,7 @@ function HeaderNew() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const res = await fetch("/api/auth/logout");
+    const res = await fetch("https://video-platform-api.onrender.com/api/auth/logout");
     const data = await res.json();
     if (data.ok) {
       console.log("Logout successful");

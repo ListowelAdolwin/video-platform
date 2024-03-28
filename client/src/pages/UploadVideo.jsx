@@ -58,7 +58,7 @@ function UploadVideo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveLoading(true);
-    const res = await fetch("/api/videos/save", {
+    const res = await fetch("https://video-platform-api.onrender.com/api/videos/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

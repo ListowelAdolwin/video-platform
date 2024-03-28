@@ -28,7 +28,7 @@ function EditVideo() {
 
   useEffect(() => {
     const getVideo = async () => {
-      const res = await fetch(`/api/videos/${id}`);
+      const res = await fetch(`https://video-platform-api.onrender.com/api/videos/${id}`);
       const data = await res.json();
       if (data.ok) {
         setTitle(data.video.title);
@@ -72,7 +72,7 @@ function EditVideo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveLoading(true);
-    const res = await fetch(`/api/videos/edit/${id}`, {
+    const res = await fetch(`https://video-platform-api.onrender.com/api/videos/edit/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
