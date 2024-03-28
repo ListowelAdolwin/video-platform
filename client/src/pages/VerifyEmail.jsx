@@ -13,7 +13,7 @@ function VerifyEmail() {
 
   useEffect(() => {
     const verifyEmail = async () => {
-      const res = await fetch(`/api/auth/verify-email/${token}`);
+      const res = await fetch(`https://video-platform-api.onrender.com/api/auth/verify-email/${token}`);
       const data = await res.json();
       console.log(data);
       if (data.ok) {

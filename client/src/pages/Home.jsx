@@ -11,8 +11,9 @@ export default function Home () {
   useEffect(() => {
     const getVideos = async () => {
       try {
-        const res = await fetch('/api/videos')
+        const res = await fetch('https://video-platform-api.onrender.com/api/videos')
         const data = await res.json()
+        console.log(data)
         setVideos(data.videos)
         setIsLoading(false)
       } catch (error) {

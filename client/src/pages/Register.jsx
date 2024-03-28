@@ -20,7 +20,7 @@ function Register() {
     setIsLoading(true);
     setErrorMessages("")
     e.preventDefault();
-    const res = await fetch("/api/auth/register", {
+    const res = await fetch("https://video-platform-api.onrender.com/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -12,7 +12,7 @@ function CheckEmailPage () {
 
   const handleEmailResend = async () => {
     setIsloading(true)
-    const res = await fetch(`/api/auth/resend-email/${id}`)
+    const res = await fetch(`https://video-platform-api.onrender.com/api/auth/resend-email/${id}`)
     const data = await res.json()
     console.log(data)
     if (data.ok) {
