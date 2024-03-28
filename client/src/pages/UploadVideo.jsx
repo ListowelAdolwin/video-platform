@@ -58,29 +58,31 @@ function UploadVideo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveLoading(true);
-    const res = await fetch("https://video-platform-api.onrender.com/api/videos/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        videoUrl,
-        poster: currentUser,
-      }),
-    });
+    const res = await fetch(
+      "https://video-platform-api.onrender.com/api/videos/save",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          videoUrl,
+          poster: currentUser,
+        }),
+      }
+    );
 
     const data = await res.json();
     if (data.ok) {
       console.log(data);
       setIsSaveLoading(false);
       toast("Video Successfully Uploaded!");
-      setInterval(() => {
         navigate("/");
-      }, 3000);
     } else {
       setIsSaveLoading(false);
+      toast.error("Upload failed! Please check the error message");
       console.log(data);
     }
   };
