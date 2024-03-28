@@ -28,7 +28,9 @@ function EditVideo() {
 
   useEffect(() => {
     const getVideo = async () => {
-      const res = await fetch(`https://video-platform-api.onrender.com/api/videos/${id}`);
+      const res = await fetch(
+        `https://video-platform-api.onrender.com/api/videos/${id}`
+      );
       const data = await res.json();
       if (data.ok) {
         setTitle(data.video.title);
@@ -72,28 +74,31 @@ function EditVideo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveLoading(true);
-    const res = await fetch(`https://video-platform-api.onrender.com/api/videos/edit/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        videoUrl,
-      }),
-    });
+    const res = await fetch(
+      `https://video-platform-api.onrender.com/api/videos/edit/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          videoUrl,
+        }),
+      }
+    );
 
     const data = await res.json();
     if (data.ok) {
       console.log(data);
       setIsSaveLoading(false);
-      toast("Video Successfully Editted!");
-      setInterval(() => {
-        navigate("/");
-      }, 3000);
+      toast("Video Successfully Edited!");
+      navigate("/");
     } else {
       console.log(data);
+      setIsSaveLoading(false);
+      toast("Video Editing failed!");
     }
   };
 
