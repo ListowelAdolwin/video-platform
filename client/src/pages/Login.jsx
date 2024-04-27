@@ -44,8 +44,8 @@ function Login() {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center w-full bg-gray-700">
-      <div className="bg-slate-600 shadow-md rounded-lg px-8 py-6 max-w-md">
+    <div className="min-h-screen flex items-center justify-center w-full">
+      <div className="bg-slate-800 shadow-md rounded-lg px-8 py-6 max-w-md">
         <h1 className="text-2xl text-white font-bold text-center mb-4 dark:text-gray-200">
           Welcome Back!
         </h1>
@@ -120,7 +120,7 @@ function Login() {
             <button
               onClick={handleSubmit}
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Login
             </button>

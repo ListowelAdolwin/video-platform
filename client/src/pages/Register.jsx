@@ -40,8 +40,8 @@ function Register() {
 
   return (
     <div>
-      <div className="min-h-screen flex items-center justify-center w-full bg-gray-700">
-        <div className=" bg-slate-600 shadow-md rounded-lg px-8 py-6 max-w-sm">
+      <div className="min-h-screen flex items-center justify-center w-full">
+        <div className=" bg-slate-800 shadow-md rounded-lg px-8 py-6 max-w-sm">
           <h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">
             Register
           </h1>
@@ -141,7 +141,7 @@ function Register() {
             ) : (
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:opacity-85"
+                className="w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:opacity-85"
               >
                 Register
               </button>

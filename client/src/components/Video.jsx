@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaExternalLinkAlt, FaEdit } from "react-icons/fa";
+import { FaEdit, FaPlay } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -35,17 +35,17 @@ function Video({ video, removeVideo }) {
           <video src={video.videoUrl} />
         </div>
       </div>
-      <div className="bg-slate-600 py-4 px-3">
+      <div className="bg-slate-800 py-4 px-3">
         <p className="text-xs text-gray-100 line-clamp-2">
           {video.description}
         </p>
         <p className="truncate text-white">{video.title}</p>
-        <div className="relative z-40 flex justify-between items-center mt-2">
+        <div className="relative z-40 flex justify-start gap-5 items-center mt-2">
           <Link
             to={`/video/${video._id}`}
             className="bg-gray-700 p-2 rounded-full text-white hover:text-blue-500"
           >
-            <FaExternalLinkAlt />
+            <FaPlay />
           </Link>
           {currentUser?.isAdmin && (
             <Link
