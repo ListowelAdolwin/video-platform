@@ -15,11 +15,11 @@ export const saveVideo = async (req, res, next) => {
             description,
             videoUrl,
             poster,
-            prevVid: lastVideo ? lastVideo._id : null
+            nextVid: lastVideo ? lastVideo._id : null
         })
         if (lastVideo) {
             await Video.findByIdAndUpdate(lastVideo._id, {
-            nextVid: newVideo._id,
+            prevVid: newVideo._id,
       });
     }
         
@@ -32,8 +32,9 @@ export const saveVideo = async (req, res, next) => {
 
 
 export const getVideos = async (req, res) => {
+    console.log("Videos fetched")
     try {
-        const videos = await Video.find()
+        const videos = await Video.find().sort({ createdAt: -1 });
         res.json({ok: true, msg: "Videos fetched successfully", videos})
     } catch (error) {
         res.status(500).json({ok: false, msg: "Error getting video"})

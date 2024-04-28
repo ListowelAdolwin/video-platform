@@ -13,10 +13,12 @@ export default function Home () {
       try {
         const res = await fetch('https://video-platform-api.onrender.com/api/videos')
         const data = await res.json()
-        console.log(data)
+        console.log("Videos")
+        console.log("Video data", data)
         setVideos(data.videos)
         setIsLoading(false)
       } catch (error) {
+        console.log("Error occurred in the videos fetch")
         console.log(error)
       }
     }

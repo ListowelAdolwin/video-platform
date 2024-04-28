@@ -29,6 +29,7 @@ function UploadVideo() {
   const handleVideoUpload = (video) => {
     setIsUploadLoading(true);
     if (!video) reject("No video provided");
+    console.log("Upload started")
 
     const storage = getStorage(app);
     const fileName = new Date().getTime() + "__" + video.name;
@@ -44,7 +45,7 @@ function UploadVideo() {
       },
       (error) => {
         setUploadError(true);
-        console.log(error);
+        console.log("Error while uploading: ", error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadRUL) => {
@@ -161,7 +162,7 @@ function UploadVideo() {
                       <Oval
                         height="30"
                         width="30"
-                        color="#383B53"
+                        color="#fff"
                         ariaLabel="tail-spin-loading"
                         radius="2"
                         wrapperStyle={{}}
@@ -201,7 +202,7 @@ function UploadVideo() {
               <Oval
                 height="30"
                 width="30"
-                color="#383B53"
+                color="#fff"
                 ariaLabel="tail-spin-loading"
                 radius="2"
                 wrapperStyle={{}}
