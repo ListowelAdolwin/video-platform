@@ -60,7 +60,7 @@ function UploadVideo() {
     e.preventDefault();
     setIsSaveLoading(true);
     const res = await fetch(
-      "http://127.0.0.1:3000/api/videos/save",
+      "https://video-platform-api.onrender.com/api/videos/save",
       {
         method: "POST",
         headers: {
