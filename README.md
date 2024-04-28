@@ -1,12 +1,8 @@
 # Video Platform
 
-Welcome to the Video Platform project! This platform was developed for video creators to upload videos to be consumed by video lovers. This README serves as a guide to understand the features and functionalities of the Platform.
-Click below to see a live demo of the the project
+Welcome to the Video Platform project! This platform was developed for video creators to upload videos to be consumed by video lovers. This README serves as a guide to understand the features and functionalities of the Platform.<br/>
+Click below to see a live demo of the the project <br/>
 [Video Platform](https://video-platform.onrender.com/)
-
-## Project Objective
-
-The Video Platform aims to provide a video hosting service where creators can upload and share videos exclusively branded to their business.
 
 ## User Requirements
 
@@ -27,7 +23,9 @@ The Video Platform aims to provide a video hosting service where creators can up
 
 - **Backend:** Node.js, Express.js, Json Web Tokens.
 - **Frontend:** React.js, Tailwind CSS, Redux, Redux-Persist.
-- **Storage:** Firebase is utilized for storing videos securely.
+- **Database:** MongoDB.
+- **Video Storage:** Videos are uploaded to firebase and their urls stored in the database.
+
 
 ## Getting Started
 
