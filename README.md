@@ -1,4 +1,4 @@
-![WebApp](https://github.com/ListowelAdolwin/video-platform/blob/dev/client/src/assets/sc.png)
+![WebApp](https://github.com/ListowelAdolwin/video-platform/blob/dev/client/src/assets/sc1.png)
 # Video Platform
 
 Welcome to the Video Platform project! This platform was developed for video creators to upload videos to be consumed by video lovers. This README serves as a guide to understand the features and functionalities of the Platform.<br/>
