@@ -1,15 +1,15 @@
-import mailer from 'nodemailer'
+import mailer from "nodemailer";
 
 const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
-  const transporter = mailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.APP_EMAIL,
-      pass: process.env.APP_PASSWORD
-    }
-  })
+	const transporter = mailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.APP_EMAIL,
+			pass: process.env.APP_PASSWORD,
+		},
+	});
 
-  const html = `<h3 style="font-family: Arial, sans-serif; margin-bottom: 15px; font-size: 18px;">
+	const html = `<h3 style="font-family: Arial, sans-serif; margin-bottom: 15px; font-size: 18px;">
             Hi there,
             </h3>
             <p style="margin-bottom: 10px;">
@@ -24,24 +24,24 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
             <p style="margin-top: 15px;">
             This link will expire soon, so don't wait too long!
             </p>
-            `
+            `;
 
-  transporter.sendMail(
-    {
-      from,
-      to,
-      subject,
-      html
-    },
-    (err, info) => {
-      if (err) {
-        console.log(`Failed to send email to ${to}`)
-        console.log(err)
-      } else {
-        console.log(`Email sent to ${to}`)
-      }
-    }
-  )
-}
+	transporter.sendMail(
+		{
+			from,
+			to,
+			subject,
+			html,
+		},
+		(err, info) => {
+			if (err) {
+				console.log(`Failed to send email to ${to}`);
+				console.log(err);
+			} else {
+				console.log(`Email sent to ${to}`);
+			}
+		}
+	);
+};
 
-export default sendCustomPasswordResetEmail
+export default sendCustomPasswordResetEmail;

@@ -25,11 +25,11 @@ function UploadVideo() {
 
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const API_URL = import.meta.env.VITE_API_URL
 
   const handleVideoUpload = (video) => {
     setIsUploadLoading(true);
     if (!video) reject("No video provided");
-    console.log("Upload started")
 
     const storage = getStorage(app);
     const fileName = new Date().getTime() + "__" + video.name;
@@ -60,7 +60,7 @@ function UploadVideo() {
     e.preventDefault();
     setIsSaveLoading(true);
     const res = await fetch(
-      "https://video-platform-api.onrender.com/api/videos/save",
+      `${API_URL}/api/videos/save`,
       {
         method: "POST",
         headers: {

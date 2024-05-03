@@ -9,11 +9,11 @@ function Video({ video, removeVideo }) {
   const { currentUser } = useSelector((state) => state.user);
   const [isdeleteLoading, setIsDeleteLoading] = useState(false);
 
-  console.log(video)
+  const API_URL = import.meta.env.VITE_API_URL
 
   const deleteVideo = async (id) => {
     setIsDeleteLoading(true);
-    const res = await fetch(`https://video-platform-api.onrender.com/api/videos/delete/${id}`);
+    const res = await fetch(`${API_URL}/api/videos/delete/${id}`);
     const data = await res.json();
     if (data.ok) {
       console.log("Delete successful: ");

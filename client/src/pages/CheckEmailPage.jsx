@@ -10,9 +10,11 @@ function CheckEmailPage () {
   const params = useParams()
   const id = params.id
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   const handleEmailResend = async () => {
     setIsloading(true)
-    const res = await fetch(`https://video-platform-api.onrender.com/api/auth/resend-email/${id}`)
+    const res = await fetch(`${API_URL}/api/auth/resend-email/${id}`)
     const data = await res.json()
     console.log(data)
     if (data.ok) {

@@ -16,9 +16,7 @@ function ResetPassword() {
   const navigate = useNavigate();
   const params = useParams();
   const token = params.token;
-  console.log("P1: ", password1);
-  console.log("P2: ", password2);
-  console.log(passwordsMatch);
+  const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     setPasswordsMatch(password1 == password2);
@@ -29,7 +27,7 @@ function ResetPassword() {
     setIsLoading(true);
     setErrorMessages("");
 
-    const res = await fetch(`https://video-platform-api.onrender.com/api/auth/reset-password/${token}`, {
+    const res = await fetch(`${API_URL}/api/auth/reset-password/${token}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,13 +85,13 @@ function ResetPassword() {
                 for="password1"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Password
+                New Password
               </label>
               <input
                 type="password"
                 id="password1"
                 className="shadow-sm bg-gray-300  rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter password"
+                placeholder="Enter new password"
                 required
                 onChange={(e) => {
                   setPassword1(e.target.value);
@@ -106,13 +104,13 @@ function ResetPassword() {
                 for="password2"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Confirm Password
+                Confirm New Password
               </label>
               <input
                 type="password"
                 id="password2"
                 className="shadow-sm bg-gray-300  rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter password"
+                placeholder="Enter new password again"
                 required
                 onChange={(e) => {
                   setPassword2(e.target.value);
