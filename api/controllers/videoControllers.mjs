@@ -37,9 +37,10 @@ export const saveVideo = async (req, res, next) => {
 };
 
 export const getVideos = async (req, res) => {
-	console.log("Videos fetched");
+	const startIndex = req.query.startIndex || 0
+	const limit = req.query.limit || 9
 	try {
-		const videos = await Video.find().sort({ createdAt: -1 });
+		const videos = await Video.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex);
 		res.json({ ok: true, msg: "Videos fetched successfully", videos });
 	} catch (error) {
 		res.status(500).json({ ok: false, msg: "Error getting video" });
