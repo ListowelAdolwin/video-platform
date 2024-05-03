@@ -17,11 +17,13 @@ function ForgotPassword() {
     });
   };
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage("");
-    const res = await fetch("https://video-platform-api.onrender.com/api/auth/reset-password", {
+    const res = await fetch(`${API_URL}/api/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

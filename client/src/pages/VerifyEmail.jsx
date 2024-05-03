@@ -11,11 +11,12 @@ function VerifyEmail() {
   const params = useParams();
   const token = params.token;
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   useEffect(() => {
     const verifyEmail = async () => {
-      const res = await fetch(`https://video-platform-api.onrender.com/api/auth/verify-email/${token}`);
+      const res = await fetch(`${API_URL}/api/auth/verify-email/${token}`);
       const data = await res.json();
-      console.log(data);
       if (data.ok) {
         setShowAlert(true);
       } else {
@@ -31,11 +32,11 @@ function VerifyEmail() {
       <ToastContainer />
       {showAlert && (
         <div
-          class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-5 max-w-sm"
+          className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-5 max-w-sm"
           role="alert"
         >
-          <p class="font-bold">Email verified!</p>
-          <p class="text-sm">
+          <p className="font-bold">Email verified!</p>
+          <p className="text-sm">
             Your email has been successfully verified. <br />
             Proceed to login
           </p>

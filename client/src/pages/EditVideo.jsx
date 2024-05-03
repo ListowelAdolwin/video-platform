@@ -26,10 +26,12 @@ function EditVideo() {
   const params = useParams();
   const id = params.id;
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   useEffect(() => {
     const getVideo = async () => {
       const res = await fetch(
-        `https://video-platform-api.onrender.com/api/videos/${id}`
+        `${API_URL}/api/videos/${id}`
       );
       const data = await res.json();
       if (data.ok) {
@@ -75,7 +77,7 @@ function EditVideo() {
     e.preventDefault();
     setIsSaveLoading(true);
     const res = await fetch(
-      `https://video-platform-api.onrender.com/api/videos/edit/${id}`,
+      `${API_URL}/api/videos/edit/${id}`,
       {
         method: "POST",
         headers: {
