@@ -12,11 +12,13 @@ import UploadVideo from "./pages/UploadVideo";
 import PrivateRoute from "./components/PrivateRoute";
 import EditVideo from "./pages/EditVideo";
 import CheckEmailPage from "./pages/CheckEmailPage";
+import CheckTokenValidity from "./components/CheckTokenValidity";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
+      <CheckTokenValidity/>
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
