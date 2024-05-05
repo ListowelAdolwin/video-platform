@@ -13,7 +13,11 @@ function Video({ video, removeVideo }) {
 
   const deleteVideo = async (id) => {
     setIsDeleteLoading(true);
-    const res = await fetch(`${API_URL}/api/videos/delete/${id}`);
+    const res = await fetch(`${API_URL}/api/videos/delete/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.accessToken}`
+      }
+    });
     const data = await res.json();
     if (data.ok) {
       console.log("Delete successful: ");
@@ -32,7 +36,13 @@ function Video({ video, removeVideo }) {
       </Link>
       <div className="h-auto overflow-hidden">
         <div className="h-44 overflow-hidden relative">
-          <video src={video.videoUrl} />
+          <video
+						//id={video._id}
+						muted
+						//poster={logo}
+					>
+						<source src={video.videoUrl} type="video/mp4" />
+					</video>
         </div>
       </div>
       <div className="bg-slate-800 py-4 px-3">
