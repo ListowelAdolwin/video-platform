@@ -9,7 +9,9 @@ export const registerUser = async (req, res) => {
 	const { username, email, password } = req.body;
 
 	if (!username || !email || !password) {
-		return res.json({ msg: "Username, Email and Password required!" });
+		return res
+			.status(400)
+			.json({ msg: "Username, Email and Password required!" });
 	}
 	// Check if duplicated username
 	const usernameDuplicate = await User.findOne({ username: username }).exec();
@@ -46,8 +48,7 @@ export const registerUser = async (req, res) => {
 
 		sendCustomEmail(from, to, subject, token);
 
-		console.log(newUser);
-		res.json({
+		res.status(201).json({
 			user: {
 				username,
 				email,
@@ -68,7 +69,7 @@ export const resendEmail = async (req, res) => {
 	const user = await User.findById(id);
 
 	if (!user) {
-		return res.json({ msg: "Email not valid" });
+		return res.status(400).json({ msg: "Email not valid", ok: false });
 	}
 	const username = user.username;
 	const email = user.email;
@@ -86,8 +87,7 @@ export const resendEmail = async (req, res) => {
 
 	sendCustomEmail(from, to, subject, newToken);
 
-	console.log(user);
-	res.json({
+	res.status(200).json({
 		user: {
 			username,
 			email,
@@ -108,14 +108,18 @@ export const verifyEmail = async (req, res) => {
 		async (err, decoded) => {
 			if (err) {
 				console.log("Email verification error: ", err);
-				return res.json({ msg: "Token expired", ok: false });
+				return res
+					.status(401)
+					.json({ msg: "Token expired", ok: false });
 			}
-			console.log("Email verification: ", decoded);
 			const user = await User.findOne({ username: decoded.username });
 			user.isEmailVerified = true;
 			await user.save();
 
-			res.json({ msg: "Email successfully verified", ok: true });
+			res.status(200).json({
+				msg: "Email successfully verified",
+				ok: true,
+			});
 		}
 	);
 };
@@ -124,20 +128,26 @@ export const verifyEmail = async (req, res) => {
 export const loginUser = async (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
-		return res.json({ msg: "Email and password required!" });
+		return res.status(400).json({ msg: "Email and password required!" });
 	}
 	const foundUser = await User.findOne({ email: email }).exec();
 	if (!foundUser) {
-		return res.json({ msg: "Wrong credentials entered", ok: false });
+		return res
+			.status(401)
+			.json({ msg: "Wrong credentials entered", ok: false });
 	}
 	if (!foundUser.isEmailVerified) {
-		return res.json({ msg: "Email verification required", ok: false });
+		return res
+			.status(403)
+			.json({ msg: "Email verification required", ok: false });
 	}
 
 	try {
 		const isValidated = bcrypt.compareSync(password, foundUser.password);
 		if (!isValidated) {
-			return res.json({ msg: "Wrong credentials entered!", ok: false });
+			return res
+				.status(401)
+				.json({ msg: "Wrong credentials entered!", ok: false });
 		}
 
 		const accessToken = jwt.sign(
@@ -167,15 +177,19 @@ export const loginUser = async (req, res) => {
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			expires: expirationTime,
-		}).json({
-			refreshToken: refreshToken,
-			msg: `User ${email} successfully logged in!`,
-			user: { ...rest, accessToken: accessToken },
-			ok: true,
-		});
+		})
+			.status(200)
+			.json({
+				refreshToken: refreshToken,
+				msg: `User ${email} successfully logged in!`,
+				user: { ...rest, accessToken: accessToken },
+				ok: true,
+			});
 	} catch (error) {
 		console.log(error);
-		return res.json({ msg: "Error while logging in", ok: false });
+		return res
+			.status(401)
+			.json({ msg: "Error while logging in", ok: false });
 	}
 };
 
@@ -184,7 +198,9 @@ export const sendPasswordResetEmail = async (req, res) => {
 	const user = await User.findOne({ email });
 
 	if (!user) {
-		return res.json({ msg: "Email not registered!", ok: false });
+		return res
+			.status(404)
+			.json({ msg: "Email not registered!", ok: false });
 	}
 
 	const resetToken = jwt.sign({ email }, process.env.PASSWORD_RESET_SECRET, {
@@ -200,7 +216,7 @@ export const sendPasswordResetEmail = async (req, res) => {
 
 	sendCustomPasswordResetEmail(from, to, subject, resetToken);
 
-	res.json({ msg: "Reset email sent", ok: true });
+	res.status(200).json({ msg: "Reset email sent", ok: true });
 };
 
 export const resetPassword = async (req, res) => {
@@ -211,8 +227,7 @@ export const resetPassword = async (req, res) => {
 		process.env.PASSWORD_RESET_SECRET,
 		async (err, decoded) => {
 			if (err) {
-				return res.json({
-					ok: false,
+				return res.status(401).json({
 					msg: "Reset password token expired",
 					ok: false,
 				});
@@ -222,7 +237,7 @@ export const resetPassword = async (req, res) => {
 
 			const foundUser = await User.findOne({ email });
 			if (!foundUser) {
-				return res.json({
+				return res.status(404).json({
 					msg: "No user found for this email",
 					ok: false,
 				});
@@ -230,10 +245,8 @@ export const resetPassword = async (req, res) => {
 
 			try {
 				const hashedPWD = await bcrypt.hash(password, 10);
-				console.log("Old user password: ", foundUser);
 				foundUser.password = hashedPWD;
 				const result = await foundUser.save();
-				console.log("New user password: ", result);
 
 				res.status(200).json({
 					ok: true,
@@ -252,7 +265,6 @@ export const resetPassword = async (req, res) => {
 
 export const verifyToken = async (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
-	console.log(req.headers);
 	if (!header?.startsWith("Bearer ")) {
 		return res.status(401).json({ msg: "Invalid token format", ok: false });
 	}
@@ -270,11 +282,29 @@ export const verifyToken = async (req, res, next) => {
 };
 
 export const verifyAdminStatus = async (req, res, next) => {
-	const poster = req.body.poster;
-	if (!poster || !poster.isAdmin) {
-		return res.status(401).json({ msg: "Forbidden!", ok: false });
+	const header = req.headers.Authorization || req.headers.authorization;
+	if (!header?.startsWith("Bearer ")) {
+		return res.status(401).json({ msg: "Invalid token format", ok: false });
 	}
-	next();
+	const token = header.split(" ")[1];
+	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+		if (err) {
+			console.log(err);
+			return res
+				.status(401)
+				.json({ expired: true, msg: "Token expired", ok: false });
+		}
+		try {
+			const user = await User.findOne({ email: decoded.email });
+			if (!user || !user.isAdmin) {
+				return res.status(403).json({ msg: "Forbidden!", ok: false });
+			}
+		} catch (error) {
+			return res.status(403).json({ msg: "Forbidden!!", ok: false });
+		}
+		req.user = decoded.username;
+		next();
+	});
 };
 
 export const verifyAccessToken = async (req, res, next) => {
@@ -290,7 +320,7 @@ export const verifyAccessToken = async (req, res, next) => {
 				.status(401)
 				.json({ expired: true, msg: "Token expired", ok: false });
 		}
-		res.status(200).json({msg: "Token active", ok: true})
+		res.status(200).json({ msg: "Token active", ok: true });
 	});
 };
 
@@ -316,7 +346,11 @@ export const refreshToken = async (req, res) => {
 		{ expiresIn: "1d" },
 		(err, decoded) => {
 			if (err) {
-				return res.json({ msg: "invalid token", expired: true, ok:false });
+				return res.json({
+					msg: "invalid token",
+					expired: true,
+					ok: false,
+				});
 			}
 			const newAccessToken = jwt.sign(
 				{
