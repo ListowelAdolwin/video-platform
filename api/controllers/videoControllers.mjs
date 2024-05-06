@@ -72,7 +72,6 @@ export const getVideo = async (req, res) => {
 export const getNextVideo = async (req, res) => {
 	const id = req.params.id;
 
-	console.log("Next vid: ", nextVid);
 	try {
 		const vid = await Video.findById(id);
 		const nextVid = vid.nextVid;
@@ -88,7 +87,6 @@ export const deleteVideo = async (req, res) => {
 
 	try {
 		const video = await Video.findById(id);
-		console.log("Video in delete video route: ", video)
 		if (!video) {
 			return res.status(404).json({ msg: "Video not found", ok: false });
 		}
