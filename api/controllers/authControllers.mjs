@@ -98,7 +98,7 @@ export const resendEmail = async (req, res) => {
 	});
 };
 
-// VERY EMAIL
+// VERIFY EMAIL
 export const verifyEmail = async (req, res) => {
 	const token = req.params.token;
 
@@ -193,6 +193,7 @@ export const loginUser = async (req, res) => {
 	}
 };
 
+// SEND EMAIL FOR USER TO RESET PASSWORD
 export const sendPasswordResetEmail = async (req, res) => {
 	const email = req.body.email;
 	const user = await User.findOne({ email });
@@ -219,6 +220,7 @@ export const sendPasswordResetEmail = async (req, res) => {
 	res.status(200).json({ msg: "Reset email sent", ok: true });
 };
 
+// RESET PASSWORD
 export const resetPassword = async (req, res) => {
 	const token = req.params.token;
 
@@ -234,7 +236,6 @@ export const resetPassword = async (req, res) => {
 			}
 
 			const { email, password } = req.body;
-
 			const foundUser = await User.findOne({ email });
 			if (!foundUser) {
 				return res.status(404).json({
@@ -243,26 +244,36 @@ export const resetPassword = async (req, res) => {
 				});
 			}
 
+			const user = await User.findOne({ token });
+			if (!(user.email === decoded.email && user.email === email)) {
+				return res.status(403).json({
+					msg: "You can only reset your own password",
+					ok: false,
+				});
+			}
+
+
 			try {
 				const hashedPWD = await bcrypt.hash(password, 10);
 				foundUser.password = hashedPWD;
-				const result = await foundUser.save();
+				await foundUser.save();
 
 				res.status(200).json({
 					ok: true,
 					msg: "Password reset successful",
 				});
 			} catch (error) {
+				console.log("Password reset error: ", error);
 				res.json({
 					msg: "An error occured while resetting password, please try again",
 					ok: false,
 				});
-				console.log("Password reset error: ", error);
 			}
 		}
 	);
 };
 
+// VERIFY TOKEN MIDDLEWARE
 export const verifyToken = async (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
@@ -281,6 +292,7 @@ export const verifyToken = async (req, res, next) => {
 	});
 };
 
+// VERIFY ADMIN STATUS MIDDLEWARE
 export const verifyAdminStatus = async (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
@@ -307,6 +319,7 @@ export const verifyAdminStatus = async (req, res, next) => {
 	});
 };
 
+// VERIFY ACCESS TOKEN CONTROLLER
 export const verifyAccessToken = async (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
@@ -324,6 +337,7 @@ export const verifyAccessToken = async (req, res, next) => {
 	});
 };
 
+// REFRESH TOKEN CONTRLLER
 export const refreshToken = async (req, res) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
@@ -332,7 +346,7 @@ export const refreshToken = async (req, res) => {
 	const token = header.split(" ")[1];
 
 	if (!token) {
-		return res.json({ msg: "invalid token", ok: false });
+		return res.json({ msg: "invalid token format", ok: false });
 	}
 
 	const user = await User.findOne({ refreshToken: token }).exec();
@@ -346,8 +360,8 @@ export const refreshToken = async (req, res) => {
 		{ expiresIn: "1d" },
 		(err, decoded) => {
 			if (err) {
-				return res.json({
-					msg: "invalid token",
+				return res.status(401).json({
+					msg: "Refresh token expired",
 					expired: true,
 					ok: false,
 				});
@@ -362,13 +376,13 @@ export const refreshToken = async (req, res) => {
 			);
 			const newRefreshToken = jwt.sign(
 				{
-					email: decoded,
+					email: decoded.email,
 					userId: decoded._id,
 				},
 				process.env.REFRESH_TOKEN_SECRET,
 				{ expiresIn: "1d" }
 			);
-			res.json({
+			res.status(200).json({
 				accessToken: newAccessToken,
 				refreshToken: newRefreshToken,
 				msg: "token refreshed",
@@ -378,9 +392,10 @@ export const refreshToken = async (req, res) => {
 	);
 };
 
+// LOGOUT CONTROLLER
 export const logoutUser = async (req, res) => {
 	try {
-		res.clearCookie("accessToken").json({
+		res.status(200).clearCookie("accessToken").json({
 			msg: "User successfully logged out!",
 			ok: true,
 		});
