@@ -8,7 +8,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
 			pass: process.env.APP_PASSWORD,
 		},
 	});
-
+	const CLIENT_URL = process.env.CLIENT_URL;
 	const html = `<h3 style="font-family: Arial, sans-serif; margin-bottom: 15px; font-size: 18px;">
             Hi there,
             </h3>
@@ -18,7 +18,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
             <p style="margin-bottom: 10px;">
             Click the link below to create a new, secure password:
             </p>
-            <a href="https://video-platform.onrender.com/reset-password/${emailResetToken}" style="color: #337ab7; text-decoration: none; border-bottom: 1px solid #337ab7;">
+            <a href="${CLIENT_URL}/reset-password/${emailResetToken}" style="color: #337ab7; text-decoration: none; border-bottom: 1px solid #337ab7;">
             Reset Password
             </a>
             <p style="margin-top: 15px;">

@@ -8,7 +8,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
 			pass: process.env.APP_PASSWORD,
 		},
 	});
-
+	const CLIENT_URL = process.env.CLIENT_URL;
 	const html = `<h3>Hello there friend from Listo,</h3>
   <p>
     Please confirm your email address to complete your registration and ensure you didn't enter it incorrectly.
@@ -16,7 +16,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
   <p>
     Click the link below to verify your email:
   </p>
-  <a href="https://video-platform.onrender.com/verify-email/${emailVerifyToken}">Verify Email</a>
+  <a href="${CLIENT_URL}/verify-email/${emailVerifyToken}">Verify Email</a>
   <p>
     You've got this!
   </p>`;
