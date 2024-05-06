@@ -48,7 +48,7 @@ beforeAll(async () => {
 	);
 
 	videoData = {
-		poster: normalUser,
+		poster: adminUser,
 		title: "test",
 		description: "test_d",
 		videoUrl: "khidhfdkjgfhd",
@@ -67,7 +67,7 @@ describe("Save video route", function () {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${normalUserAccessToken}`)
-				.send(videoData);
+				.send({ ...videoData, poster: normalUser });
 
 			expect(response.status).toBe(403);
 			expect(response.body).toStrictEqual({
@@ -81,7 +81,7 @@ describe("Save video route", function () {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${adminAccessToken}`)
-				.send({ ...videoData, poster: adminUser, title: "" });
+				.send({ ...videoData, title: "" });
 			expect(response.status).toBe(400);
 			expect(response.body).toStrictEqual({
 				ok: false,
@@ -95,9 +95,37 @@ describe("Save video route", function () {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${adminAccessToken}`)
-				.send({ ...videoData, poster: adminUser, nextVid: null });
+				.send(videoData);
 			expect(response.status).toBe(201);
 			expect(response.body.msg).toBe("Video saved successfully");
+		});
+	});
+
+	describe("Given three saved videos", function () {
+		it("Should be correctly linked to form a doubly linked list", async function () {
+			await request(app)
+				.post("/api/videos/save")
+				.set("Authorization", `Bearer ${adminAccessToken}`)
+				.send({ ...videoData, title: "video 1" });
+
+			await request(app)
+				.post("/api/videos/save")
+				.set("Authorization", `Bearer ${adminAccessToken}`)
+				.send({ ...videoData, title: "video 2" });
+
+			await request(app)
+				.post("/api/videos/save")
+				.set("Authorization", `Bearer ${adminAccessToken}`)
+				.send({ ...videoData, title: "video 3" });
+
+			const video1 = await Video.findOne({ title: "video 1" });
+			const video2 = await Video.findOne({ title: "video 2" });
+			const video3 = await Video.findOne({ title: "video 3" });
+
+			expect(video3.nextVid._id).toStrictEqual(video2._id);
+			expect(video2.nextVid._id).toStrictEqual(video1._id);
+			expect(video1.prevVid._id).toStrictEqual(video2._id);
+			expect(video2.prevVid._id).toStrictEqual(video3._id);
 		});
 	});
 });
@@ -177,6 +205,41 @@ describe("Delete video route", function () {
 
 			expect(response.status).toBe(404);
 			expect(response.body.msg).toBe("Video not found");
+		});
+	});
+});
+
+describe("Edit video route", function () {
+	describe("Given wrong video id", function () {
+		it("Should return 404", async function () {
+			const wrongId = new mongoose.Types.ObjectId().toString();
+			const response = await request(app)
+				.post(`/api/videos/edit/${wrongId}`)
+				.set("Authorization", `Bearer ${adminAccessToken}`)
+				.send({
+					...videoData,
+					title: "Updated title",
+				});
+
+			expect(response.status).toBe(404);
+			expect(response.body.msg).toBe("Video not found");
+		});
+	});
+
+	describe("Given valid video id", function () {
+		it("Should return 200 and updated video", async function () {
+			const video = await Video.findOne();
+			const response = await request(app)
+				.post(`/api/videos/edit/${video.id}`)
+				.set("Authorization", `Bearer ${adminAccessToken}`)
+				.send({
+					...videoData,
+					title: "Updated title",
+				});
+
+			expect(response.status).toBe(200);
+			expect(response.body.msg).toBe("Video edited successfully!");
+			expect(response.body.video.title).toBe("Updated title");
 		});
 	});
 });
