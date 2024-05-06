@@ -119,7 +119,7 @@ function ResetPassword() {
               />
             </div>
             <div className="mb-3 font-bold">
-              {passwordsMatch ? <GiCheckMark /> : <VscError />}
+              {passwordsMatch ? <GiCheckMark className="text-green-700" /> : <VscError className="text-red-700" />}
             </div>
 
             {isLoading ? (

@@ -7,7 +7,10 @@ import {
 	deleteVideo,
 	editVideo,
 } from "../controllers/videoControllers.mjs";
-import { verifyAdminStatus } from "../controllers/authControllers.mjs";
+import {
+	verifyAdminStatus,
+	verifyToken,
+} from "../controllers/authControllers.mjs";
 
 const router = express.Router();
 
@@ -15,7 +18,7 @@ router.get("", getVideos);
 router.get("/:id", getVideo);
 router.post("/save", verifyAdminStatus, saveVideo);
 router.post("/next", getNextVideo);
-router.get("/delete/:id", deleteVideo);
-router.post("/edit/:id", editVideo);
+router.get("/delete/:id", verifyAdminStatus, deleteVideo);
+router.post("/edit/:id", verifyAdminStatus, editVideo);
 
 export default router;

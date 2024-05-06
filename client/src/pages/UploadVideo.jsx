@@ -65,6 +65,7 @@ function UploadVideo() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${currentUser.accessToken}`
         },
         body: JSON.stringify({
           title,

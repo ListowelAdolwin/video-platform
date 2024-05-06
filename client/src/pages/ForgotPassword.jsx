@@ -45,11 +45,11 @@ function ForgotPassword() {
     <div className="min-h-screen flex flex-col items-center justify-center w-full">
       {showAlert && (
         <div
-          class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-5 max-w-sm"
+          className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-5 max-w-sm"
           role="alert"
         >
-          <p class="font-bold">Kindly note</p>
-          <p class="text-sm">
+          <p className="font-bold">Kindly note</p>
+          <p className="text-sm">
             Please check your email{" "}
             <span className="font-semibold">{userData.email}</span> and follow
             the next steps to reset your password.

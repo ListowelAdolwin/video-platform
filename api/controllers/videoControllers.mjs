@@ -2,7 +2,6 @@ import Video from "../models/Video.mjs";
 
 export const saveVideo = async (req, res, next) => {
 	const { title, description, videoUrl, poster } = req.body;
-	console.log(req.body);
 
 	if (!title || !description || !videoUrl) {
 		return res
@@ -37,11 +36,18 @@ export const saveVideo = async (req, res, next) => {
 };
 
 export const getVideos = async (req, res) => {
-	const startIndex = req.query.startIndex || 0
-	const limit = req.query.limit || 9
+	const startIndex = req.query.startIndex || 0;
+	const limit = req.query.limit || 9;
 	try {
-		const videos = await Video.find().sort({ createdAt: -1 }).limit(limit).skip(startIndex);
-		res.json({ ok: true, msg: "Videos fetched successfully", videos });
+		const videos = await Video.find()
+			.sort({ createdAt: -1 })
+			.limit(limit)
+			.skip(startIndex);
+		res.status(200).json({
+			ok: true,
+			msg: "Videos fetched successfully",
+			videos,
+		});
 	} catch (error) {
 		res.status(500).json({ ok: false, msg: "Error getting video" });
 		console.log(error);
@@ -53,7 +59,10 @@ export const getVideo = async (req, res) => {
 	try {
 		const projection = { username: 1 };
 		const video = await Video.findById(id).populate("poster", projection);
-		res.json({ ok: true, msg: "Videos fetched successfully", video });
+		if (!video) {
+			return res.status(404).json({ ok: false, msg: "Video not found" });
+		}
+		res.status(200).json({ ok: true, msg: "Videos fetched successfully", video });
 	} catch (error) {
 		res.status(500).json({ ok: false, msg: "Error getting video" });
 		console.log(error);
@@ -63,7 +72,6 @@ export const getVideo = async (req, res) => {
 export const getNextVideo = async (req, res) => {
 	const id = req.params.id;
 
-	console.log("Next vid: ", nextVid);
 	try {
 		const vid = await Video.findById(id);
 		const nextVid = vid.nextVid;
@@ -99,7 +107,7 @@ export const deleteVideo = async (req, res) => {
 		res.status(200).json({ msg: "Video deleted", ok: true });
 	} catch (error) {
 		console.log("Error in video deletion: ", error);
-		return res.json({ msg: "Could not delete video", ok: false });
+		return res.status(500).json({ msg: "Could not delete video", ok: false });
 	}
 };
 
