@@ -8,7 +8,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
 			pass: process.env.APP_PASSWORD,
 		},
 	});
-	const CLIENT_URL = process.env.CLIENT_URL;
+	const { CLIENT_URL } = process.env;
 	const html = `<h3 style="font-family: Arial, sans-serif; margin-bottom: 15px; font-size: 18px;">
             Hi there,
             </h3>
@@ -33,6 +33,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
 			subject,
 			html,
 		},
+		/* eslint-disable-next-line no-unused-vars */
 		(err, info) => {
 			if (err) {
 				console.log(`Failed to send email to ${to}`);
@@ -40,7 +41,7 @@ const sendCustomPasswordResetEmail = (from, to, subject, emailResetToken) => {
 			} else {
 				console.log(`Email sent to ${to}`);
 			}
-		}
+		},
 	);
 };
 

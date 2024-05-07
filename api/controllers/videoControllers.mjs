@@ -1,7 +1,9 @@
 import Video from "../models/Video.mjs";
 
-export const saveVideo = async (req, res, next) => {
-	const { title, description, videoUrl, poster } = req.body;
+export const saveVideo = async (req, res) => {
+	const {
+		title, description, videoUrl, poster,
+	} = req.body;
 
 	if (!title || !description || !videoUrl) {
 		return res
@@ -24,14 +26,14 @@ export const saveVideo = async (req, res, next) => {
 			});
 		}
 
-		res.status(201).json({
+		return res.status(201).json({
 			ok: true,
 			msg: "Video saved successfully",
 			video: newVideo,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({ ok: false, msg: "Error saving video" });
+		return res.status(500).json({ ok: false, msg: "Error saving video" });
 	}
 };
 
@@ -55,26 +57,26 @@ export const getVideos = async (req, res) => {
 };
 
 export const getVideo = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 	try {
 		const projection = { username: 1 };
 		const video = await Video.findById(id).populate("poster", projection);
 		if (!video) {
 			return res.status(404).json({ ok: false, msg: "Video not found" });
 		}
-		res.status(200).json({ ok: true, msg: "Videos fetched successfully", video });
+		return res.status(200).json({ ok: true, msg: "Videos fetched successfully", video });
 	} catch (error) {
-		res.status(500).json({ ok: false, msg: "Error getting video" });
 		console.log(error);
+		return res.status(500).json({ ok: false, msg: "Error getting video" });
 	}
 };
 
 export const getNextVideo = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 
 	try {
 		const vid = await Video.findById(id);
-		const nextVid = vid.nextVid;
+		const { nextVid } = vid;
 		res.json({ ok: true, msg: "Videos fetched successfully", nextVid });
 	} catch (error) {
 		res.status(500).json({ ok: false, msg: "Error getting video" });
@@ -83,7 +85,7 @@ export const getNextVideo = async (req, res) => {
 };
 
 export const deleteVideo = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 
 	try {
 		const video = await Video.findById(id);
@@ -104,7 +106,7 @@ export const deleteVideo = async (req, res) => {
 		}
 
 		await Video.findByIdAndDelete(id);
-		res.status(200).json({ msg: "Video deleted", ok: true });
+		return res.status(200).json({ msg: "Video deleted", ok: true });
 	} catch (error) {
 		console.log("Error in video deletion: ", error);
 		return res.status(500).json({ msg: "Could not delete video", ok: false });
@@ -112,7 +114,7 @@ export const deleteVideo = async (req, res) => {
 };
 
 export const editVideo = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 	const video = await Video.findById(id);
 	if (!video) {
 		return res.status(404).json({ msg: "Video not found", ok: false });
@@ -124,10 +126,10 @@ export const editVideo = async (req, res) => {
 			{
 				$set: req.body,
 			},
-			{ new: true }
+			{ new: true },
 		);
 
-		res.status(200).json({
+		return res.status(200).json({
 			msg: "Video edited successfully!",
 			ok: true,
 			video: updatedVideo,

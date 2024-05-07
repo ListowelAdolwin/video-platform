@@ -1,6 +1,6 @@
-import User from "../models/User.mjs";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import User from "../models/User.mjs";
 import sendCustomEmail from "../utils/sendEmail.mjs";
 import sendCustomPasswordResetEmail from "../utils/sendPasswordResetEmail.mjs";
 
@@ -14,14 +14,14 @@ export const registerUser = async (req, res) => {
 			.json({ msg: "Username, Email and Password required!" });
 	}
 	// Check if duplicated username
-	const usernameDuplicate = await User.findOne({ username: username }).exec();
+	const usernameDuplicate = await User.findOne({ username }).exec();
 	if (usernameDuplicate) {
 		return res
 			.status(409)
 			.json({ msg: `User with username ${username} already exist!` });
 	}
 	// Check if duplicate email
-	const emailDuplicate = await User.findOne({ email: email }).exec();
+	const emailDuplicate = await User.findOne({ email }).exec();
 	if (emailDuplicate) {
 		return res
 			.status(409)
@@ -33,12 +33,12 @@ export const registerUser = async (req, res) => {
 		const token = jwt.sign(
 			{ username, email },
 			process.env.EMAIL_CONFIRM_SECRET,
-			{ expiresIn: "600s" }
+			{ expiresIn: "600s" },
 		);
 		const newUser = await User.create({
-			username: username,
-			email: email,
-			token: token,
+			username,
+			email,
+			token,
 			password: hashedPSWD,
 		});
 		// Send email verification email
@@ -48,7 +48,7 @@ export const registerUser = async (req, res) => {
 
 		sendCustomEmail(from, to, subject, token);
 
-		res.status(201).json({
+		return res.status(201).json({
 			user: {
 				username,
 				email,
@@ -59,25 +59,24 @@ export const registerUser = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({ msg: "Error saving user" });
+		return res.json({ msg: "Error saving user" });
 	}
 };
 
 // RESEND EMAIL (AFTER FIRST ONE PROBABLY EXPIRES BEFORE USER VERIFIES)
 export const resendEmail = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 	const user = await User.findById(id);
 
 	if (!user) {
 		return res.status(400).json({ msg: "Email not valid", ok: false });
 	}
-	const username = user.username;
-	const email = user.email;
+	const { username, email } = user;
 
 	const newToken = jwt.sign(
 		{ username, email },
 		process.env.EMAIL_CONFIRM_SECRET,
-		{ expiresIn: "600s" }
+		{ expiresIn: "600s" },
 	);
 
 	// Resend email
@@ -86,8 +85,8 @@ export const resendEmail = async (req, res) => {
 	const subject = "Email Verification";
 
 	sendCustomEmail(from, to, subject, newToken);
-
-	res.status(200).json({
+	/* eslint-disable-next-line no-unused-vars */
+	return res.status(200).json({
 		user: {
 			username,
 			email,
@@ -100,7 +99,7 @@ export const resendEmail = async (req, res) => {
 
 // VERIFY EMAIL
 export const verifyEmail = async (req, res) => {
-	const token = req.params.token;
+	const { token } = req.params;
 
 	jwt.verify(
 		token,
@@ -116,11 +115,11 @@ export const verifyEmail = async (req, res) => {
 			user.isEmailVerified = true;
 			await user.save();
 
-			res.status(200).json({
+			return res.status(200).json({
 				msg: "Email successfully verified",
 				ok: true,
 			});
-		}
+		},
 	);
 };
 
@@ -130,7 +129,7 @@ export const loginUser = async (req, res) => {
 	if (!email || !password) {
 		return res.status(400).json({ msg: "Email and password required!" });
 	}
-	const foundUser = await User.findOne({ email: email }).exec();
+	const foundUser = await User.findOne({ email }).exec();
 	if (!foundUser) {
 		return res
 			.status(401)
@@ -152,37 +151,37 @@ export const loginUser = async (req, res) => {
 
 		const accessToken = jwt.sign(
 			{
-				email: email,
+				email,
 				userId: foundUser._id,
 			},
 			process.env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: "900s" }
+			{ expiresIn: "900s" },
 		);
 
 		const refreshToken = jwt.sign(
 			{
-				email: email,
+				email,
 				userId: foundUser._id,
 			},
 			process.env.REFRESH_TOKEN_SECRET,
-			{ expiresIn: "1d" }
+			{ expiresIn: "1d" },
 		);
 
-		foundUser.set({ refreshToken: refreshToken });
+		foundUser.set({ refreshToken });
 		await foundUser.save();
 
 		const { password: pass, ...rest } = foundUser._doc;
 
 		const expirationTime = new Date(Date.now() + 900 * 1000);
-		res.cookie("refreshToken", refreshToken, {
+		return res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			expires: expirationTime,
 		})
 			.status(200)
 			.json({
-				refreshToken: refreshToken,
+				refreshToken,
 				msg: `User ${email} successfully logged in!`,
-				user: { ...rest, accessToken: accessToken },
+				user: { ...rest, accessToken },
 				ok: true,
 			});
 	} catch (error) {
@@ -195,7 +194,7 @@ export const loginUser = async (req, res) => {
 
 // SEND EMAIL FOR USER TO RESET PASSWORD
 export const sendPasswordResetEmail = async (req, res) => {
-	const email = req.body.email;
+	const { email } = req.body;
 	const user = await User.findOne({ email });
 
 	if (!user) {
@@ -217,12 +216,12 @@ export const sendPasswordResetEmail = async (req, res) => {
 
 	sendCustomPasswordResetEmail(from, to, subject, resetToken);
 
-	res.status(200).json({ msg: "Reset email sent", ok: true });
+	return res.status(200).json({ msg: "Reset email sent", ok: true });
 };
 
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
-	const token = req.params.token;
+	const { token } = req.params;
 
 	jwt.verify(
 		token,
@@ -252,34 +251,35 @@ export const resetPassword = async (req, res) => {
 				});
 			}
 
-
 			try {
 				const hashedPWD = await bcrypt.hash(password, 10);
 				foundUser.password = hashedPWD;
 				await foundUser.save();
 
-				res.status(200).json({
+				return res.status(200).json({
 					ok: true,
 					msg: "Password reset successful",
 				});
 			} catch (error) {
 				console.log("Password reset error: ", error);
-				res.json({
+				return res.json({
 					msg: "An error occured while resetting password, please try again",
 					ok: false,
 				});
 			}
-		}
+		},
 	);
 };
 
 // VERIFY TOKEN MIDDLEWARE
-export const verifyToken = async (req, res, next) => {
+/* eslint-disable-next-line consistent-return */
+export const verifyToken = (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
 		return res.status(401).json({ msg: "Invalid token format", ok: false });
 	}
 	const token = header.split(" ")[1];
+	/* eslint-disable-next-line consistent-return */
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
 		if (err) {
 			console.log(err);
@@ -293,12 +293,14 @@ export const verifyToken = async (req, res, next) => {
 };
 
 // VERIFY ADMIN STATUS MIDDLEWARE
+/* eslint-disable-next-line consistent-return */
 export const verifyAdminStatus = async (req, res, next) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
 		return res.status(401).json({ msg: "Invalid token format", ok: false });
 	}
 	const token = header.split(" ")[1];
+	/* eslint-disable-next-line consistent-return */
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
 		if (err) {
 			console.log(err);
@@ -320,24 +322,26 @@ export const verifyAdminStatus = async (req, res, next) => {
 };
 
 // VERIFY ACCESS TOKEN CONTROLLER
-export const verifyAccessToken = async (req, res, next) => {
+/* eslint-disable-next-line consistent-return */
+export const verifyAccessToken = async (req, res) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
 		return res.status(401).json({ msg: "Invalid token format", ok: false });
 	}
 	const token = header.split(" ")[1];
-	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err) => {
 		if (err) {
 			console.log(err);
 			return res
 				.status(401)
 				.json({ expired: true, msg: "Token expired", ok: false });
 		}
-		res.status(200).json({ msg: "Token active", ok: true });
+		return res.status(200).json({ msg: "Token active", ok: true });
 	});
 };
 
 // REFRESH TOKEN CONTRLLER
+/* eslint-disable-next-line consistent-return */
 export const refreshToken = async (req, res) => {
 	const header = req.headers.Authorization || req.headers.authorization;
 	if (!header?.startsWith("Bearer ")) {
@@ -372,7 +376,7 @@ export const refreshToken = async (req, res) => {
 					userId: decoded._id,
 				},
 				process.env.ACCESS_TOKEN_SECRET,
-				{ expiresIn: "900s" }
+				{ expiresIn: "900s" },
 			);
 			const newRefreshToken = jwt.sign(
 				{
@@ -380,15 +384,15 @@ export const refreshToken = async (req, res) => {
 					userId: decoded._id,
 				},
 				process.env.REFRESH_TOKEN_SECRET,
-				{ expiresIn: "1d" }
+				{ expiresIn: "1d" },
 			);
-			res.status(200).json({
+			return res.status(200).json({
 				accessToken: newAccessToken,
 				refreshToken: newRefreshToken,
 				msg: "token refreshed",
 				ok: true,
 			});
-		}
+		},
 	);
 };
 

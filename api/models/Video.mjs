@@ -29,7 +29,7 @@ const videoSchema = new mongoose.Schema(
 			default: null,
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 const Video = mongoose.model("Video", videoSchema);

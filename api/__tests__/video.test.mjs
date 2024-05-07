@@ -1,13 +1,16 @@
 import request from "supertest";
-import app from "../app.mjs";
-import User from "../models/User.mjs";
-import Video from "../models/Video.mjs";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import jwt from "jsonwebtoken";
+import app from "../app.mjs";
+import User from "../models/User.mjs";
+import Video from "../models/Video.mjs";
 
 let mongoServer;
-let adminUser, normalUser, adminAccessToken, normalUserAccessToken;
+let adminUser;
+let normalUser;
+let adminAccessToken;
+let normalUserAccessToken;
 let videoData;
 beforeAll(async () => {
 	mongoServer = await MongoMemoryServer.create();
@@ -27,7 +30,7 @@ beforeAll(async () => {
 			userId: adminUser._id,
 		},
 		process.env.ACCESS_TOKEN_SECRET,
-		{ expiresIn: "900s" }
+		{ expiresIn: "900s" },
 	);
 
 	normalUser = await User.create({
@@ -44,7 +47,7 @@ beforeAll(async () => {
 			userId: normalUser._id,
 		},
 		process.env.ACCESS_TOKEN_SECRET,
-		{ expiresIn: "900s" }
+		{ expiresIn: "900s" },
 	);
 
 	videoData = {
@@ -61,9 +64,9 @@ afterAll(async () => {
 	await mongoServer.stop();
 });
 
-describe("Save video route", function () {
-	describe("Given the user is not an admin", function () {
-		it("Should returun 403 an forbidden error message", async function () {
+describe("Save video route", () => {
+	describe("Given the user is not an admin", () => {
+		it("Should returun 403 an forbidden error message", async () => {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${normalUserAccessToken}`)
@@ -76,8 +79,8 @@ describe("Save video route", function () {
 			});
 		});
 	});
-	describe("Given no title, description, or videoUrl", function () {
-		it("Should return 400 with field missing error message", async function () {
+	describe("Given no title, description, or videoUrl", () => {
+		it("Should return 400 with field missing error message", async () => {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${adminAccessToken}`)
@@ -90,8 +93,8 @@ describe("Save video route", function () {
 		});
 	});
 
-	describe("Given all valid video data", function () {
-		it("Should return 201 with success message", async function () {
+	describe("Given all valid video data", () => {
+		it("Should return 201 with success message", async () => {
 			const response = await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${adminAccessToken}`)
@@ -101,8 +104,8 @@ describe("Save video route", function () {
 		});
 	});
 
-	describe("Given three saved videos", function () {
-		it("Should be correctly linked to form a doubly linked list", async function () {
+	describe("Given three saved videos", () => {
+		it("Should be correctly linked to form a doubly linked list", async () => {
 			await request(app)
 				.post("/api/videos/save")
 				.set("Authorization", `Bearer ${adminAccessToken}`)
@@ -130,12 +133,15 @@ describe("Save video route", function () {
 	});
 });
 
-describe("Get videos route", function () {
-	describe("Given a limit of 7", function () {
-		it("Should return status code 200 and array of length 3", async function () {
-			for (let i = 0; i < 10; i++) {
-				await Video.create({ ...videoData, poster: adminUser });
+describe("Get videos route", () => {
+	describe("Given a limit of 7", () => {
+		it("Should return status code 200 and array of length 3", async () => {
+			const videoPromises = [];
+			for (let i = 0; i < 10; i += 1) {
+				videoPromises.push(Video.create({ ...videoData, poster: adminUser }));
 			}
+
+			await Promise.all(videoPromises);
 			const response = await request(app).get("/api/videos/?limit=7");
 
 			expect(response.status).toBe(200);
@@ -144,16 +150,16 @@ describe("Get videos route", function () {
 	});
 });
 
-describe("Get video route", function () {
-	describe("given a wrong video id", function () {
-		it("should return status 404", async function () {
+describe("Get video route", () => {
+	describe("given a wrong video id", () => {
+		it("should return status 404", async () => {
 			const response = await request(app).get("/api/video/didhifdgffdfi");
 			expect(response.status).toBe(404);
 		});
 	});
 
-	describe("Given valid video id", function () {
-		it("Should return status 200 and the video", async function () {
+	describe("Given valid video id", () => {
+		it("Should return status 200 and the video", async () => {
 			const video = await Video.findOne();
 			const response = await request(app).get(`/api/videos/${video.id}`);
 			expect(response.status).toBe(200);
@@ -162,9 +168,9 @@ describe("Get video route", function () {
 	});
 });
 
-describe("Delete video route", function () {
-	describe("Given the user is not an admin", function () {
-		it("Should returun 403 an forbidden error message", async function () {
+describe("Delete video route", () => {
+	describe("Given the user is not an admin", () => {
+		it("Should returun 403 an forbidden error message", async () => {
 			const video = await Video.findOne();
 			const response = await request(app)
 				.get(`/api/videos/delete/${video.id}`)
@@ -177,8 +183,8 @@ describe("Delete video route", function () {
 		});
 	});
 
-	describe("Given invalid video id", function () {
-		it("Should return status 404 and video not found message", async function () {
+	describe("Given invalid video id", () => {
+		it("Should return status 404 and video not found message", async () => {
 			const id = new mongoose.Types.ObjectId().toString();
 			const response = await request(app)
 				.get(`/api/videos/delete/${id}`)
@@ -189,9 +195,9 @@ describe("Delete video route", function () {
 		});
 	});
 
-	describe("Given a valid video id", function () {
+	describe("Given a valid video id", () => {
 		let video;
-		it("Should return status 200 and video deleted message", async function () {
+		it("Should return status 200 and video deleted message", async () => {
 			video = await Video.findOne();
 			const response = await request(app)
 				.get(`/api/videos/delete/${video.id}`)
@@ -200,7 +206,7 @@ describe("Delete video route", function () {
 			expect(response.body.msg).toBe("Video deleted");
 		});
 
-		it("Should return status 404 and video not found message", async function () {
+		it("Should return status 404 and video not found message", async () => {
 			const response = await request(app).get(`/api/videos/${video.id}`);
 
 			expect(response.status).toBe(404);
@@ -209,9 +215,9 @@ describe("Delete video route", function () {
 	});
 });
 
-describe("Edit video route", function () {
-	describe("Given wrong video id", function () {
-		it("Should return 404", async function () {
+describe("Edit video route", () => {
+	describe("Given wrong video id", () => {
+		it("Should return 404", async () => {
 			const wrongId = new mongoose.Types.ObjectId().toString();
 			const response = await request(app)
 				.post(`/api/videos/edit/${wrongId}`)
@@ -226,8 +232,8 @@ describe("Edit video route", function () {
 		});
 	});
 
-	describe("Given valid video id", function () {
-		it("Should return 200 and updated video", async function () {
+	describe("Given valid video id", () => {
+		it("Should return 200 and updated video", async () => {
 			const video = await Video.findOne();
 			const response = await request(app)
 				.post(`/api/videos/edit/${video.id}`)

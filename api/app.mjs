@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import videoRoutes from "./routes/videoRoutes.mjs";
-import cors from "cors";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.use(
 		],
 		methods: ["GET", "POST", "PUT", "DELETE"],
 		credentials: true,
-	})
+	}),
 );
 
 app.use(express.json());
@@ -32,5 +32,4 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/videos", videoRoutes);
 
-
-export default app
+export default app;

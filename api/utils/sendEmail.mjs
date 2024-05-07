@@ -8,7 +8,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
 			pass: process.env.APP_PASSWORD,
 		},
 	});
-	const CLIENT_URL = process.env.CLIENT_URL;
+	const { CLIENT_URL } = process.env;
 	const html = `<h3>Hello there friend from Listo,</h3>
   <p>
     Please confirm your email address to complete your registration and ensure you didn't enter it incorrectly.
@@ -28,6 +28,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
 			subject,
 			html,
 		},
+		/* eslint-disable-next-line no-unused-vars */
 		(err, info) => {
 			if (err) {
 				console.log(`Failed to send email to ${to}`);
@@ -35,7 +36,7 @@ const sendCustomEmail = (from, to, subject, emailVerifyToken) => {
 			} else {
 				console.log(`Email sent to ${to}`);
 			}
-		}
+		},
 	);
 };
 

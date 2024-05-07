@@ -9,7 +9,6 @@ import {
 } from "../controllers/videoControllers.mjs";
 import {
 	verifyAdminStatus,
-	verifyToken,
 } from "../controllers/authControllers.mjs";
 
 const router = express.Router();
