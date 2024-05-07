@@ -28,7 +28,7 @@ function HeaderNew() {
 		}
 	};
 
-	const { currentUser } = useSelector((state) => state.user);
+	const { currentUser } = useSelector(state => state.user);
 
 	return (
 		<header className="mx-auto  mt-2 w-full max-w-screen-md bg-slate-700 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl lg:max-w-screen-lg">
@@ -36,11 +36,7 @@ function HeaderNew() {
 			<div className="px-4">
 				<div className="flex items-center justify-between">
 					<Link to="/">
-						<img
-							className="rounded-lg h-10 w-16"
-							src={logo}
-							alt=""
-						/>
+						<img className="rounded-lg h-10 w-16" src={logo} alt="" />
 					</Link>
 
 					{currentUser ? (

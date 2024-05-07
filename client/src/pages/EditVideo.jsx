@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RiChatDeleteFill } from "react-icons/ri";
-import {
-	getDownloadURL,
-	getStorage,
-	ref,
-	uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,7 +23,7 @@ function EditVideo() {
 	const id = params.id;
 
 	const API_URL = import.meta.env.VITE_API_URL;
-  const { currentUser } = useSelector((state) => state.user);
+	const { currentUser } = useSelector(state => state.user);
 
 	useEffect(() => {
 		const getVideo = async () => {
@@ -44,7 +39,7 @@ function EditVideo() {
 		getVideo();
 	}, []);
 
-	const handleVideoUpload = (video) => {
+	const handleVideoUpload = video => {
 		setIsUploadLoading(true);
 		if (!video) return;
 
@@ -55,17 +50,16 @@ function EditVideo() {
 
 		uploadTask.on(
 			"state_changed",
-			(snapshot) => {
-				const progress =
-					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			snapshot => {
+				const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 				setUploadPercent(Math.round(progress));
 			},
-			(error) => {
+			error => {
 				setUploadError(true);
 				console.log(error);
 			},
 			() => {
-				getDownloadURL(uploadTask.snapshot.ref).then((downloadRUL) => {
+				getDownloadURL(uploadTask.snapshot.ref).then(downloadRUL => {
 					setVideoUrl(downloadRUL);
 					setIsUploadLoading(false);
 				});
@@ -73,14 +67,14 @@ function EditVideo() {
 		);
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async e => {
 		e.preventDefault();
 		setIsSaveLoading(true);
 		const res = await fetch(`${API_URL}/api/videos/edit/${id}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Authorization": `Bearer ${currentUser.accessToken}`,
+				Authorization: `Bearer ${currentUser.accessToken}`,
 			},
 			body: JSON.stringify({
 				title,
@@ -91,7 +85,6 @@ function EditVideo() {
 
 		const data = await res.json();
 		if (data.ok) {
-			console.log(data);
 			setIsSaveLoading(false);
 			toast("Video Successfully Edited!");
 			navigate("/");
@@ -105,10 +98,7 @@ function EditVideo() {
 	return (
 		<div className="w-full flex mt-12 px-6 items-center justify-center text-white">
 			<ToastContainer />
-			<form
-				onSubmit={handleSubmit}
-				className="flex flex-col sm:flex-row gap-6 sm:gap-10"
-			>
+			<form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-6 sm:gap-10">
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-2">
 						<label className="font-semibold">Title</label>
@@ -118,7 +108,7 @@ function EditVideo() {
 							type="text"
 							required
 							value={title}
-							onChange={(e) => {
+							onChange={e => {
 								setTitle(e.target.value);
 							}}
 						/>
@@ -134,7 +124,7 @@ function EditVideo() {
 							rows="4"
 							required
 							value={description}
-							onChange={(e) => {
+							onChange={e => {
 								setDesciption(e.target.value);
 							}}
 						/>
@@ -142,10 +132,7 @@ function EditVideo() {
 				</div>
 				<div>
 					<div className="flex flex-col gap-4">
-						<label className="font-semibold">
-							{" "}
-							Select Video to upload
-						</label>
+						<label className="font-semibold"> Select Video to upload</label>
 						<div className="flex items-center">
 							<input
 								className=""
@@ -153,7 +140,7 @@ function EditVideo() {
 								name=""
 								id=""
 								accept="video/.*"
-								onChange={(e) => {
+								onChange={e => {
 									setVideo(e.target.files[0]);
 								}}
 							/>
@@ -161,14 +148,8 @@ function EditVideo() {
 						<div className="relative">
 							{video && (
 								<div>
-									<video
-										className="rounded-lg"
-										width="300"
-										controls
-									>
-										<source
-											src={URL.createObjectURL(video)}
-										/>
+									<video className="rounded-lg" width="300" controls>
+										<source src={URL.createObjectURL(video)} />
 									</video>
 									<button
 										type="button"
@@ -210,12 +191,9 @@ function EditVideo() {
 						</div>
 					</div>
 					<div className="mt-2">
-						{uploadPercent !== 0 && uploadPercent < 100 && (
-							<p>Uploading {uploadPercent}%</p>
-						)}
-						{uploadPercent == 100 && (
-							<p className="text-green-500">Upload successful!</p>
-						)}
+						{uploadPercent !== 0 && uploadPercent < 100 && <p>Uploading {uploadPercent}%</p>}
+						{uploadPercent == 100 && <p className="text-green-500">Upload successful!</p>}
+						{uploadError && <p className="text-red-500">Error while uploading video</p>}
 					</div>
 					{isSaveLoading ? (
 						<div

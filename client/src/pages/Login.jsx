@@ -15,14 +15,14 @@ function Login() {
 
 	const API_URL = import.meta.env.VITE_API_URL;
 
-	const handleChange = (e) => {
+	const handleChange = e => {
 		setUserData({
 			...userData,
 			[e.target.id]: e.target.value,
 		});
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async e => {
 		e.preventDefault();
 		setIsLoading(true);
 		setErrorMessage("");
@@ -33,9 +33,7 @@ function Login() {
 			},
 			body: JSON.stringify(userData),
 		});
-		console.log(res);
 		const data = await res.json();
-		console.log(data);
 		if (data.ok) {
 			setIsLoading(false);
 			dispatch(loginUser(data.user));
@@ -48,19 +46,11 @@ function Login() {
 	return (
 		<div className="min-h-screen flex items-center justify-center w-full">
 			<div className="bg-slate-800 shadow-md rounded-lg px-8 py-6 max-w-md">
-				<h1 className="text-2xl text-white font-bold text-center mb-4 dark:text-gray-200">
-					Welcome Back!
-				</h1>
-				{errorMessage && (
-					<p className="mb-3 p-2 bg-red-800 text-white text-sm opacity-75 rounded-lg">
-						{errorMessage}
-					</p>
-				)}
+				<h1 className="text-2xl text-white font-bold text-center mb-4 dark:text-gray-200">Welcome Back!</h1>
+				{errorMessage && <p className="mb-3 p-2 bg-red-800 text-white text-sm opacity-75 rounded-lg">{errorMessage}</p>}
 				<form action="#">
 					<div className="mb-4">
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-							Email
-						</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
 						<input
 							type="email"
 							id="email"
@@ -71,9 +61,7 @@ function Login() {
 						/>
 					</div>
 					<div className="mb-4">
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-							Password
-						</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
 						<input
 							type="password"
 							id="password"
@@ -83,10 +71,7 @@ function Login() {
 							onChange={handleChange}
 						/>
 					</div>
-					<Link
-						to="/reset-password"
-						className="text-xs text-white outline-1 p-1 ring-1 ring-offset-1 ring-gray-300"
-					>
+					<Link to="/reset-password" className="text-xs text-white outline-1 p-1 ring-1 ring-offset-1 ring-gray-300">
 						Forgot Password?
 					</Link>
 					{isLoading ? (
@@ -112,10 +97,7 @@ function Login() {
 						</button>
 					)}
 					<div className="text-end text-xs text-white mt-3 mb-3">
-						<Link
-							to="/register"
-							className="hover:outline-3 hover:ring-2 hover:ring-offset-2 hover:opacity-85"
-						>
+						<Link to="/register" className="hover:outline-3 hover:ring-2 hover:ring-offset-2 hover:opacity-85">
 							Create Account
 						</Link>
 					</div>

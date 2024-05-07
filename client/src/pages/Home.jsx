@@ -25,19 +25,16 @@ export default function Home() {
 		getVideos();
 	}, []);
 
-	const removeDeletedVideo = (videoId) => {
-		setVideos(videos.filter((vid) => vid._id !== videoId));
+	const removeDeletedVideo = videoId => {
+		setVideos(videos.filter(vid => vid._id !== videoId));
 	};
 
 	const handleShowMore = async () => {
 		setShowMore(false);
 		const startIndex = videos.length;
 		try {
-			const res = await fetch(
-				`${API_URL}/api/videos/?limit=9&&startIndex=${startIndex}`
-			);
+			const res = await fetch(`${API_URL}/api/videos/?limit=9&&startIndex=${startIndex}`);
 			const data = await res.json();
-			console.log("Showmore data: ", data);
 			if (data.ok) {
 				setVideos([...videos, ...data.videos]);
 				setShowMore(data.videos.length > 8);
@@ -61,14 +58,7 @@ export default function Home() {
 						fill="none"
 						viewBox="0 0 24 24"
 					>
-						<circle
-							className="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							strokeWidth="4"
-						></circle>
+						<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
 						<path
 							className="opacity-75"
 							fill="currentColor"
@@ -76,20 +66,14 @@ export default function Home() {
 						></path>
 					</svg>
 
-					<span className="text-white text-2xl font-bold">
-						Loading videos...
-					</span>
+					<span className="text-white text-2xl font-bold">Loading videos...</span>
 				</div>
 			)}
 			<div className="px-2 my-2 sm:px-10 sm:my-10">
 				{videos && videos.length > 0 && (
 					<div className="grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
-						{videos.map((video) => (
-							<Video
-								video={video}
-								removeVideo={removeDeletedVideo}
-								key={video._id}
-							/>
+						{videos.map(video => (
+							<Video video={video} removeVideo={removeDeletedVideo} key={video._id} />
 						))}
 					</div>
 				)}

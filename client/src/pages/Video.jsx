@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaShare } from "react-icons/fa6";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
@@ -38,13 +38,13 @@ function Video() {
 		getVideo();
 	}, [refresh]);
 
-	const handleNext = (e) => {
+	const handleNext = () => {
 		setIsNextLoading(true);
 		setRefresh(!refresh);
 		navigate(`/video/${video.nextVid}`);
 	};
 
-	const handlePrev = (e) => {
+	const handlePrev = () => {
 		setIsPrevLoading(true);
 		setRefresh(!refresh);
 		navigate(`/video/${video.prevVid}`);
@@ -64,14 +64,7 @@ function Video() {
 							fill="none"
 							viewBox="0 0 24 24"
 						>
-							<circle
-								className="opacity-25"
-								cx="12"
-								cy="12"
-								r="10"
-								stroke="currentColor"
-								strokeWidth="4"
-							></circle>
+							<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
 							<path
 								className="opacity-75"
 								fill="currentColor"
@@ -79,9 +72,7 @@ function Video() {
 							></path>
 						</svg>
 
-						<span className="text-white text-2xl font-bold">
-							Loading video...
-						</span>
+						<span className="text-white text-2xl font-bold">Loading video...</span>
 					</div>
 				)}
 
@@ -131,9 +122,7 @@ function Video() {
 						)}
 					</div>
 					<div className="flex justify-between items-center mb-2">
-						<div className="font-semibold text-lg text-left">
-							{video && video.title}
-						</div>
+						<div className="font-semibold text-lg text-left">{video && video.title}</div>
 						<div
 							onClick={() => {
 								setShowShareModal(true);
@@ -147,30 +136,20 @@ function Video() {
 
 					<div className="flex items-center">
 						<div className="flex-shrink-0 mr-3">
-							<img
-								className="h-10 w-10 rounded-full"
-								src="https://via.placeholder.com/150"
-								alt="Avatar"
-							/>
+							<img className="h-10 w-10 rounded-full" src="https://via.placeholder.com/150" alt="Avatar" />
 						</div>
 						<div className="text-sm">
-							<p className="leading-none">
-								{video && video.poster.username}
-							</p>
+							<p className="leading-none">{video && video.poster.username}</p>
 						</div>
 					</div>
-					<p className="text-start pb-6">
-						{video && video.description}
-					</p>
+					<p className="text-start pb-6">{video && video.description}</p>
 				</div>
 			</div>
 			{showShareModal && (
 				<div className="w-full fixed flex items-center justify-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
 					<div className="bg-gray-700 mx-4 p-4 rounded-xl">
 						<div className="flex justify-between items center border-b border-gray-200 py-3">
-							<p className="text-xl font-bold text-white">
-								Share Video Modal
-							</p>
+							<p className="text-xl font-bold text-white">Share Video Modal</p>
 							<button
 								onClick={() => {
 									setShowShareModal(false);
@@ -204,9 +183,7 @@ function Video() {
 
 								<button
 									onClick={() => {
-										navigator.clipboard.writeText(
-											window.location.href
-										);
+										navigator.clipboard.writeText(window.location.href);
 										setCopied(true);
 										setTimeout(() => {
 											setCopied(false);

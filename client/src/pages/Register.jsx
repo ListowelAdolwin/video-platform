@@ -10,14 +10,14 @@ function Register() {
 	const navigate = useNavigate();
 	const API_URL = import.meta.env.VITE_API_URL;
 
-	const handleChange = (e) => {
+	const handleChange = e => {
 		setUserData({
 			...userData,
 			[e.target.id]: e.target.value,
 		});
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async e => {
 		setIsLoading(true);
 		setErrorMessages("");
 		e.preventDefault();
@@ -29,7 +29,6 @@ function Register() {
 			body: JSON.stringify(userData),
 		});
 		const data = await res.json();
-		console.log("Response:", data);
 		if (res.ok) {
 			setIsLoading(false);
 			navigate(`/check-email/${data.user.id}`);
@@ -43,20 +42,13 @@ function Register() {
 		<div>
 			<div className="min-h-screen flex items-center justify-center w-full">
 				<div className=" bg-slate-800 shadow-md rounded-lg px-8 py-6 max-w-sm">
-					<h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">
-						Register
-					</h1>
+					<h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">Register</h1>
 					{errorMessages && (
-						<p className="mb-3 p-2 bg-red-800 text-white text-sm opacity-75 rounded-lg">
-							{errorMessages}
-						</p>
+						<p className="mb-3 p-2 bg-red-800 text-white text-sm opacity-75 rounded-lg">{errorMessages}</p>
 					)}
 					<form onSubmit={handleSubmit}>
 						<div className="mb-4">
-							<label
-								for="username"
-								className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-							>
+							<label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 								Username
 							</label>
 							<input
@@ -69,10 +61,7 @@ function Register() {
 							/>
 						</div>
 						<div className="mb-4">
-							<label
-								for="email"
-								className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-							>
+							<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 								Email
 							</label>
 							<input
@@ -85,10 +74,7 @@ function Register() {
 							/>
 						</div>
 						<div className="mb-4">
-							<label
-								for="password"
-								className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-							>
+							<label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 								Password
 							</label>
 							<input

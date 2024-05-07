@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -15,28 +14,28 @@ import CheckEmailPage from "./pages/CheckEmailPage";
 import CheckTokenValidity from "./components/CheckTokenValidity";
 
 function App() {
-  return (
-    <div>
-      <BrowserRouter>
-      <CheckTokenValidity/>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/check-email/:id" element={<CheckEmailPage />} />
-          <Route path="/verify-email/:token" element={<VerifyEmail />} />
-          <Route path="/reset-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/video/:id" element={<Video />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/upload" element={<UploadVideo />} />
-            <Route path="/edit/:id" element={<EditVideo />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+	return (
+		<div>
+			<BrowserRouter>
+				<CheckTokenValidity />
+				<Header />
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/register" element={<Register />} />
+					<Route path="/check-email/:id" element={<CheckEmailPage />} />
+					<Route path="/verify-email/:token" element={<VerifyEmail />} />
+					<Route path="/reset-password" element={<ForgotPassword />} />
+					<Route path="/reset-password/:token" element={<ResetPassword />} />
+					<Route path="/video/:id" element={<Video />} />
+					<Route element={<PrivateRoute />}>
+						<Route path="/upload" element={<UploadVideo />} />
+						<Route path="/edit/:id" element={<EditVideo />} />
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</div>
+	);
 }
 
 export default App;
