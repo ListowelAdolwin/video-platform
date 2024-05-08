@@ -353,16 +353,16 @@ export const refreshToken = async (req, res) => {
 		return res.json({ msg: "invalid token format", ok: false });
 	}
 
-	const user = await User.findOne({ refreshToken: token }).exec();
-	if (!user) {
-		return res.json({ msg: "invalid user", ok: false });
-	}
+	// const user = await User.findOne({ refreshToken: token });
+	// if (!user) {
+	// 	return res.json({ msg: "invalid user", ok: false });
+	// }
 
 	jwt.verify(
 		token,
 		process.env.REFRESH_TOKEN_SECRET,
 		{ expiresIn: "1d" },
-		(err, decoded) => {
+		async (err, decoded) => {
 			if (err) {
 				return res.status(401).json({
 					msg: "Refresh token expired",
@@ -386,6 +386,13 @@ export const refreshToken = async (req, res) => {
 				process.env.REFRESH_TOKEN_SECRET,
 				{ expiresIn: "1d" },
 			);
+
+			await User.findOneAndUpdate(
+				{ email: decoded.email },
+				{ $set: { refreshToken } },
+				{ new: true },
+			);
+
 			return res.status(200).json({
 				accessToken: newAccessToken,
 				refreshToken: newRefreshToken,
