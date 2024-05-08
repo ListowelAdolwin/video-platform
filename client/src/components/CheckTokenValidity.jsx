@@ -38,7 +38,7 @@ const CheckTokenValidity = () => {
 		};
 
 		checkToken();
-	}, [dispatch, currentUser, API_URL]);
+	}, []);
 
 	return null;
 };
