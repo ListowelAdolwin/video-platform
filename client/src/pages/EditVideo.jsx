@@ -5,8 +5,9 @@ import { app } from "../firebase.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Oval } from "react-loader-spinner";
+import { loginUser, logoutUser } from "../redux/features/user/userSlice.jsx";
 
 function EditVideo() {
 	const [title, setTitle] = useState("");
@@ -19,6 +20,7 @@ function EditVideo() {
 	const [isUploadLoading, setIsUploadLoading] = useState(false);
 
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const params = useParams();
 	const id = params.id;
 
@@ -67,14 +69,12 @@ function EditVideo() {
 		);
 	};
 
-	const handleSubmit = async e => {
-		e.preventDefault();
-		setIsSaveLoading(true);
+	const sendEditVideoRequest = async accessToken => {
 		const res = await fetch(`${API_URL}/api/videos/edit/${id}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${currentUser.accessToken}`,
+				Authorization: `Bearer ${accessToken}`,
 			},
 			body: JSON.stringify({
 				title,
@@ -82,6 +82,43 @@ function EditVideo() {
 				videoUrl,
 			}),
 		});
+		return res;
+	};
+
+	const handleSubmit = async e => {
+		e.preventDefault();
+		setIsSaveLoading(true);
+		const res = await sendEditVideoRequest(currentUser.accessToken);
+		if (res.status === 401) {
+			const refreshRes = await fetch(`${API_URL}/api/auth/refresh`, {
+				headers: {
+					Authorization: `Bearer ${currentUser.refreshToken}`,
+				},
+			});
+
+			const refreshData = await refreshRes.json();
+			if (refreshData.ok) {
+				const updatedUser = {
+					...currentUser,
+					accessToken: refreshData.accessToken,
+					refreshToken: refreshData.refreshToken,
+				};
+				dispatch(loginUser(updatedUser));
+			} else {
+				dispatch(logoutUser());
+			}
+			const newRes = await sendEditVideoRequest(refreshData.accessToken);
+			const data = await newRes.json();
+			if (data.ok) {
+				setIsSaveLoading(false);
+				toast("Video Successfully Edited!");
+				navigate("/");
+			} else {
+				console.log(data);
+				setIsSaveLoading(false);
+				toast("Video Editing failed!");
+			}
+		}
 
 		const data = await res.json();
 		if (data.ok) {

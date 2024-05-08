@@ -2,22 +2,59 @@ import React, { useState } from "react";
 import { FaEdit, FaPlay } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Oval } from "react-loader-spinner";
+import { loginUser, logoutUser } from "../redux/features/user/userSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Video({ video, removeVideo }) {
 	const { currentUser } = useSelector(state => state.user);
 	const [isdeleteLoading, setIsDeleteLoading] = useState(false);
+	const dispatch = useDispatch();
 
 	const API_URL = import.meta.env.VITE_API_URL;
 
-	const deleteVideo = async id => {
-		setIsDeleteLoading(true);
+	const sendDeleteVideoRequest = async (id, accessToken) => {
 		const res = await fetch(`${API_URL}/api/videos/delete/${id}`, {
 			headers: {
-				Authorization: `Bearer ${currentUser.accessToken}`,
+				Authorization: `Bearer ${accessToken}`,
 			},
 		});
+		return res;
+	};
+	const deleteVideo = async id => {
+		setIsDeleteLoading(true);
+		const res = await sendDeleteVideoRequest(id, currentUser.accessToken);
+
+		if (res.status === 401) {
+			const refreshRes = await fetch(`${API_URL}/api/auth/refresh`, {
+				headers: {
+					Authorization: `Bearer ${currentUser.refreshToken}`,
+				},
+			});
+
+			const refreshData = await refreshRes.json();
+			if (refreshData.ok) {
+				const updatedUser = {
+					...currentUser,
+					accessToken: refreshData.accessToken,
+					refreshToken: refreshData.refreshToken,
+				};
+				dispatch(loginUser(updatedUser));
+			} else {
+				dispatch(logoutUser());
+			}
+			const newRes = await sendDeleteVideoRequest(refreshData.accessToken);
+			const data = await newRes.json();
+			if (data.ok) {
+				setIsDeleteLoading(false);
+				removeVideo(id);
+				toast("Video delete successful!");
+			} else {
+				console.log(data);
+			}
+		}
 		const data = await res.json();
 		if (data.ok) {
 			setIsDeleteLoading(false);
@@ -27,6 +64,7 @@ function Video({ video, removeVideo }) {
 
 	return (
 		<div className="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm">
+			<ToastContainer />
 			<Link to={`/video/${video._id}`} className="z-20 absolute h-full w-full top-0 left-0 ">
 				&nbsp;
 			</Link>

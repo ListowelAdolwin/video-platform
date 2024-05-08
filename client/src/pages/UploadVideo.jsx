@@ -5,8 +5,9 @@ import { app } from "../firebase.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Oval } from "react-loader-spinner";
+import { loginUser, logoutUser } from "../redux/features/user/userSlice.jsx";
 
 function UploadVideo() {
 	const [title, setTitle] = useState("");
@@ -20,6 +21,7 @@ function UploadVideo() {
 
 	const navigate = useNavigate();
 	const { currentUser } = useSelector(state => state.user);
+	const dispatch = useDispatch();
 	const API_URL = import.meta.env.VITE_API_URL;
 
 	const handleVideoUpload = video => {
@@ -49,14 +51,12 @@ function UploadVideo() {
 		);
 	};
 
-	const handleSubmit = async e => {
-		e.preventDefault();
-		setIsSaveLoading(true);
+	const sendSaveVideoRequest = async accessToken => {
 		const res = await fetch(`${API_URL}/api/videos/save`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${currentUser.accessToken}`,
+				Authorization: `Bearer ${accessToken}`,
 			},
 			body: JSON.stringify({
 				title,
@@ -65,6 +65,46 @@ function UploadVideo() {
 				poster: currentUser,
 			}),
 		});
+		return res;
+	};
+
+	const handleSubmit = async e => {
+		e.preventDefault();
+		setIsSaveLoading(true);
+		setIsUploadLoading(true);
+
+		const res = await sendSaveVideoRequest(currentUser.accessToken);
+		if (res.status === 401) {
+			const refreshRes = await fetch(`${API_URL}/api/auth/refresh`, {
+				headers: {
+					Authorization: `Bearer ${currentUser.refreshToken}`,
+				},
+			});
+
+			const refreshData = await refreshRes.json();
+			if (refreshData.ok) {
+				const updatedUser = {
+					...currentUser,
+					accessToken: refreshData.accessToken,
+					refreshToken: refreshData.refreshToken,
+				};
+				dispatch(loginUser(updatedUser));
+			} else {
+				dispatch(logoutUser());
+			}
+
+			const newRes = await sendSaveVideoRequest(refreshData.accessToken);
+			const data = await newRes.json();
+			if (data.ok) {
+				setIsSaveLoading(false);
+				toast("Video Successfully Uploaded!");
+				navigate("/");
+			} else {
+				setIsSaveLoading(false);
+				console.log(data);
+				toast.error("Upload failed! Please check the error message");
+			}
+		}
 
 		const data = await res.json();
 		if (data.ok) {
@@ -73,8 +113,8 @@ function UploadVideo() {
 			navigate("/");
 		} else {
 			setIsSaveLoading(false);
-			toast.error("Upload failed! Please check the error message");
 			console.log(data);
+			toast.error("Upload failed! Please check the error message");
 		}
 	};
 
@@ -121,7 +161,7 @@ function UploadVideo() {
 								name=""
 								id=""
 								accept="video/.*"
-								required
+								//required
 								onChange={e => {
 									setVideo(e.target.files[0]);
 								}}
