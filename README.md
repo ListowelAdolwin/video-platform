@@ -25,6 +25,7 @@ Click below to see a live demo of the the project <br/>
 - **Backend:** Node.js, Express.js, Json Web Tokens.
 - **Frontend:** React.js, Tailwind CSS, Redux, Redux-Persist.
 - **Database:** MongoDB.
+- **Testing:** Jest and Supertest
 - **Video Storage:** Videos are uploaded to firebase and their urls stored in the database.
 
 
@@ -37,6 +38,10 @@ To get started with the Video Platform, follow these steps:
 3. Configure environment variables for backend and frontend.
 4. Run the backend server using `npm run dev`.
 5. Run the frontend application using `npm run dev`.
+
+## Testing
+1. Navigate to `api/`
+2. Run `npm test` to execute test files for authentication and video controllers
 
 ## Contributing
 
