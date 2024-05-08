@@ -116,7 +116,7 @@ function EditVideo() {
 			} else {
 				console.log(data);
 				setIsSaveLoading(false);
-				toast("Video Editing failed!");
+				toast("Couldn't edit video! Please retry. Refreshing the page might help");
 			}
 		}
 
@@ -128,7 +128,7 @@ function EditVideo() {
 		} else {
 			console.log(data);
 			setIsSaveLoading(false);
-			toast("Video Editing failed!");
+			toast("Couldn't edit video! Please retry. Refreshing the page might help");
 		}
 	};
 

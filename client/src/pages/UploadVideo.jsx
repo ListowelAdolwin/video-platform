@@ -102,7 +102,7 @@ function UploadVideo() {
 			} else {
 				setIsSaveLoading(false);
 				console.log(data);
-				toast.error("Upload failed! Please check the error message");
+				toast.error("Couldn't upload video! Please retry. Refreshing the page might help");
 			}
 		}
 
@@ -114,7 +114,7 @@ function UploadVideo() {
 		} else {
 			setIsSaveLoading(false);
 			console.log(data);
-			toast.error("Upload failed! Please check the error message");
+			toast.error("Couldn't upload video! Please retry. Refreshing the page might help");
 		}
 	};
 
