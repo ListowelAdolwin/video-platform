@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import videoRoutes from "./routes/videoRoutes.mjs";
@@ -8,6 +9,14 @@ import videoRoutes from "./routes/videoRoutes.mjs";
 dotenv.config();
 
 const app = express();
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // limit each IP to 100 requests per windowMs
+	message: "Max requests limit reached",
+});
+
+app.use(limiter);
 
 app.use(
 	cors({
